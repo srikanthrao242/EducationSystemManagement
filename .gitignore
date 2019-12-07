@@ -1,6 +1,6 @@
-./idea
-./target
-./project/project
-./project/target
-./company_management/target
-./service/target
+/.idea/
+/target/
+/project/project/
+/project/target/
+/company management/target/
+/service/target/

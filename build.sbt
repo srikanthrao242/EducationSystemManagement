@@ -1,3 +1,5 @@
+import sbt._
+import Dependencies._
 
 val _name = "Education System Management"
 val _version = "0.0.1"
@@ -5,15 +7,18 @@ val _version = "0.0.1"
 lazy val baseSettings = Seq(
   name := _name,
   version := _version,
-  organization := "com.education.system",
+  organization := "com.ems",
   scalaVersion := "2.13.1"
 )
 
-lazy val service = project.in(file("service"))
+lazy val service =  project.in(file(serviceMod))
 
-lazy val companyMgt = project.in(file("company_management"))
+lazy val companyMgt = project.in(file(companyMgtMod))
 
-lazy val root = (project in file(".")).settings(name := _name)
-  .aggregate(service,companyMgt)
+val rootDependencies = akkaDep ++ sprayJsonDep ++ pureConfigDep ++ testingDep
 
-
+lazy val root = (project in file("."))
+  .settings(name := _name)
+  .aggregate(service, companyMgt)
+  .dependsOn(service, companyMgt)
+  .settings(libraryDependencies ++= rootDependencies)
