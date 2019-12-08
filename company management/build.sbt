@@ -14,5 +14,5 @@ lazy val companyMgt = project
   .in(file("."))
   .settings(name := _name )
   .settings(
-    libraryDependencies ++= akkaDep
+    libraryDependencies ++= (akkaDep ++ loggingDep)
   )

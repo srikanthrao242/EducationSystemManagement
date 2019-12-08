@@ -1,3 +1,4 @@
+/**/
 import sbt._
 object Dependencies {
 
@@ -15,7 +16,10 @@ object Dependencies {
   val akkaDep = Seq(
     "com.typesafe.akka" %% "akka-actor"     % akka,
     "com.typesafe.akka" %% "akka-stream"    % akka,
-    "com.typesafe.akka" %% "akka-http"      % akka_http,
+    "com.typesafe.akka" %% "akka-http"      % akka_http
+  )
+
+  val loggingDep = Seq(
     "com.typesafe.akka" %% "akka-slf4j"     % akka,
     "ch.qos.logback"    % "logback-classic" % logback
   )

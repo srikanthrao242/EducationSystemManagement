@@ -18,7 +18,15 @@
         <appender-ref ref="FILE" />
     </appender>
 
-    <root level="INFO">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder>
+            <pattern>[%date{ISO8601}] [%level] [%logger] [%marker] [%thread] - %msg {%mdc}%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
         <appender-ref ref="ASYNC"/>
+        <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

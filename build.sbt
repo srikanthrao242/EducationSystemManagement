@@ -15,7 +15,7 @@ lazy val service =  project.in(file(serviceMod))
 
 lazy val companyMgt = project.in(file(companyMgtMod))
 
-val rootDependencies = akkaDep ++ sprayJsonDep ++ pureConfigDep ++ testingDep
+val rootDependencies = akkaDep ++ sprayJsonDep ++ pureConfigDep ++ testingDep ++ loggingDep
 
 lazy val root = (project in file("."))
   .settings(name := _name)

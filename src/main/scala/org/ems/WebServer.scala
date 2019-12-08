@@ -1,20 +1,25 @@
+/**/
 package org.ems
 
-import akka.event.Logging
+import akka.event.slf4j.SLF4JLogging
 import akka.http.scaladsl.Http
 import org.ems.config.ESMConfig
 
+import scala.util.{Failure, Success}
 
-trait WebServer extends {
+
+trait WebServer  extends SLF4JLogging{
   this: AkkaCoreModule
     with Router =>
-
-  val log = Logging(actorSystem, this.getClass.getName)
 
   private val host = ESMConfig.config.http.host
   private val port = ESMConfig.config.http.port
 
   private val binding = Http().bindAndHandle(mainRoute, host, port)
-  log.info(s"server listening on port $port")
-
+  binding.onComplete{
+    case Success(_) =>
+      log.info(s"server listening on port $port")
+    case Failure(exception) =>
+    log.debug(s"Got error while starting server",exception)
+  }
 }

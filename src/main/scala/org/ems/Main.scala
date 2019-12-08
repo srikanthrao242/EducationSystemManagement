@@ -1,3 +1,4 @@
+/**/
 package org.ems
 
 object Main extends App

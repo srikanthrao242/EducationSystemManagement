@@ -15,5 +15,5 @@ lazy val service =
     .in(file("."))
     .settings(name := _name)
     .settings(
-      libraryDependencies ++= akkaDep
+      libraryDependencies ++= (akkaDep ++ loggingDep)
     )
