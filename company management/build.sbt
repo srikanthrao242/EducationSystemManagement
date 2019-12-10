@@ -1,3 +1,4 @@
+/**/
 import Dependencies._
 
 val _name = companyMgtMod
@@ -14,5 +15,5 @@ lazy val companyMgt = project
   .in(file("."))
   .settings(name := _name )
   .settings(
-    libraryDependencies ++= (akkaDep ++ loggingDep)
+    libraryDependencies ++= (akkaDep ++ loggingDep ++ scalazDep ++ doobieDep )
   )

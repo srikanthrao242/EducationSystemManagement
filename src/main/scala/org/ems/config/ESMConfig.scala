@@ -8,7 +8,8 @@ import pureconfig.generic.auto._
 
 
 case class HttpConfig(host:String, port: Int)
-case class EMS(http: HttpConfig)
+case class DBConfig(url: String, driver: String, username: String, password: String, connectTimeout: String)
+case class EMS(http: HttpConfig, db: DBConfig)
 case class EmsConf(`education-management-system`: EMS)
 
 object ESMConfig {
@@ -16,6 +17,6 @@ object ESMConfig {
   val config = ConfigSource.default.load[EmsConf] match {
     case Right(c) => c.`education-management-system`
     case Left(e) =>
-      throw new RuntimeException("Config error: " + e)
+      throw new RuntimeException("Config error: " + e.head)
   }
 }

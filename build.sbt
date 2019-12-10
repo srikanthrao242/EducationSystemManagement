@@ -1,3 +1,4 @@
+/**/
 import sbt._
 import Dependencies._
 
@@ -11,11 +12,18 @@ lazy val baseSettings = Seq(
   scalaVersion := "2.13.1"
 )
 
-lazy val service =  project.in(file(serviceMod))
+lazy val service = project.in(file(serviceMod))
 
 lazy val companyMgt = project.in(file(companyMgtMod))
 
-val rootDependencies = akkaDep ++ sprayJsonDep ++ pureConfigDep ++ testingDep ++ loggingDep
+val rootDependencies =
+  akkaDep ++
+  sprayJsonDep ++
+  pureConfigDep ++
+  testingDep ++
+  loggingDep ++
+  scalazDep ++
+  doobieDep
 
 lazy val root = (project in file("."))
   .settings(name := _name)
