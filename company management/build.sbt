@@ -15,5 +15,5 @@ lazy val companyMgt = project
   .in(file("."))
   .settings(name := _name )
   .settings(
-    libraryDependencies ++= (akkaDep ++ loggingDep ++ scalazDep ++ doobieDep )
+    libraryDependencies ++= (akkaDep ++ loggingDep ++ pureConfigDep ++ doobieDep )
   )

@@ -43,7 +43,8 @@ object Dependencies {
   )
   val doobieDep = Seq(
     "mysql"        % "mysql-connector-java" % mysql,
-    "org.tpolecat" %% "doobie-core"         % doobie_ver
+    "org.tpolecat" %% "doobie-core"         % doobie_ver,
+    "org.tpolecat" %% "doobie-hikari"       % doobie_ver
   )
 
 }

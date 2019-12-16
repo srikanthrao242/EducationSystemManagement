@@ -22,7 +22,6 @@ val rootDependencies =
   pureConfigDep ++
   testingDep ++
   loggingDep ++
-  scalazDep ++
   doobieDep
 
 lazy val root = (project in file("."))
