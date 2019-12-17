@@ -14,7 +14,7 @@ object Dependencies {
   val scala_mock = "4.4.0"
   val scalaz_ver = "7.2.29"
   val doobie_ver = "0.8.6"
-  val mysql = "8.0.18"
+  val mysql = "8.0.15"
 
   val akkaDep = Seq(
     "com.typesafe.akka" %% "akka-actor"           % akka,

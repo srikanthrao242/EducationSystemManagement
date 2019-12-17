@@ -12,12 +12,13 @@ import org.ems.entities.CompanySer._
 object ImportExportDao extends SLF4JLogging {
   val table = "companies"
   val keyCol = "id"
-  val columns = List("companyname",
-                     "address",
+  val columns = List("address",
                      "city",
-                     "mobile",
+                     "companyname",
                      "email",
-                     "regiteredat",
+                     "mobile",
+                     "id",
+                     "registerdate",
                      "registrationexp")
 
   def insertCompany(company: InsertCompany): IO[Int] = {
@@ -64,8 +65,8 @@ object ImportExportDao extends SLF4JLogging {
 
   def findCompany(id: Int): IO[Option[Company]] = {
     val queryString =
-      s"""SELECT * FROM
-          $table WHERE $keyCol = $id"""
+      s"""SELECT ${columns.mkString(", ")}
+          FROM $table WHERE $keyCol = ? """
     log.debug(s"$queryString")
     DbModule.transactor.use { xa =>
       {
@@ -75,10 +76,8 @@ object ImportExportDao extends SLF4JLogging {
   }
 
   def findAllCompanies(): IO[List[Company]] = {
-    val queryString = s"""
-                SELECT *
-                FROM $table
-              """
+    val queryString = s""" SELECT ${columns.mkString(", ")}
+                FROM $table"""
     log.debug(s"$queryString")
     DbModule.transactor.use { xa =>
       {

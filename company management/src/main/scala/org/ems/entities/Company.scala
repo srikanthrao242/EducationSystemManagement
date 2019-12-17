@@ -27,7 +27,7 @@ case class AddCompanies(company: InsertCompany)
 
 object CompanySer {
   implicit object DateJsonFormat extends RootJsonFormat[Timestamp] {
-    override def write(obj: Timestamp) = JsString(obj.toString)
+    override def write(obj: Timestamp): JsString = JsString(obj.toString)
     override def read(json: JsValue) : Timestamp = json match {
       case JsString(s) => Timestamp.valueOf(s)
       case _ => throw new DeserializationException("Error info you want here ...")

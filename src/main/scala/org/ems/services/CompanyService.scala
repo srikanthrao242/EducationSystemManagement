@@ -13,14 +13,14 @@ import scala.concurrent.duration._
 class CompanyService(company: ActorRef)(implicit val ec: ExecutionContext) {
   implicit val timeout = Timeout(5 seconds)
 
-  def getAllCompanies(): Future[List[Company]] =
+  def getAllCompanies: Future[List[Company]] =
     for {
       companies <- (company ? GetAllCompanies).mapTo[List[Company]]
     } yield companies
 
-  def getCompany(id: Int): Future[Company] =
+  def getCompany(id: Int): Future[Option[Company]] =
     for {
-      comp <- (company ? GetCompany(id)).mapTo[Company]
+      comp <- (company ? GetCompany(id)).mapTo[Option[Company]]
     } yield comp
 
   def deleteCompany(id: Int): Future[Int] =

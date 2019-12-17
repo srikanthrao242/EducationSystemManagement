@@ -13,17 +13,17 @@ object DbModule {
     IO.contextShift(ExecutionContexts.synchronous)
 
   val transactor: Resource[IO, HikariTransactor[IO]] =
-    for {
-      ce <- ExecutionContexts.fixedThreadPool[IO](db.poolSize) // our connect EC
-      be <- Blocker[IO] // our blocking EC
-      xa <- HikariTransactor.newHikariTransactor[IO](
-        db.driver,
-        db.url,
-        db.username,
-        db.password,
-        ce, // await connection here
-        be // execute JDBC operations here
-      )
-    } yield xa
+  for {
+    ce <- ExecutionContexts.fixedThreadPool[IO](db.poolSize) // our connect EC
+    be <- Blocker[IO] // our blocking EC
+    xa <- HikariTransactor.newHikariTransactor[IO](
+      db.driver,
+      db.url,
+      db.username,
+      db.password,
+      ce, // await connection here
+      be // execute JDBC operations here
+    )
+  } yield xa
 
 }

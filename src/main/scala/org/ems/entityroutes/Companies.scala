@@ -26,8 +26,7 @@ trait Companies extends RouteConcatenation with SLF4JLogging {
       get {
         complete(
           companyService
-            .getAllCompanies()
-            .map(v => v)
+            .getAllCompanies
         )
       }
     } ~ pathPrefix("company") {
