@@ -13,7 +13,8 @@ case class DBConfig(url: String,
                     password: String,
                     connectTimeout: String,
                     poolSize: Int)
-case class EMS(http: HttpConfig)
+case class ClientHttp(host: String, port: Int)
+case class EMS(http: HttpConfig, client: ClientHttp)
 case class EmsConf(`education-management-system`: EMS)
 
 object ESMConfig {
