@@ -2,26 +2,27 @@
 package org.ems
 
 import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.model.headers.RawHeader
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server._
+import akka.http.scaladsl.server.Directives.{complete, handleExceptions, handleRejections, pathPrefix, pathSingleSlash}
+import akka.http.scaladsl.server.{Route, RouteConcatenation}
 import org.ems.config.ESMConfig
-import org.ems.entityroutes.Companies
+import org.ems.entityroutes.{Companies, Users}
+import org.ems.util.CORSHandler
 import org.ems.util.ExceptionHandling._
-
-trait Router extends RouteConcatenation with Companies {
+trait Router
+  extends RouteConcatenation
+  with Companies
+  with Users
+  with CORSHandler {
   this: AkkaCoreModule =>
   val client = ESMConfig.config.client
   val mainRoute: Route =
-    respondWithHeaders(
-      RawHeader("Access-Control-Allow-Origin", s"http://${client.host}:${client.port}")
-    ) {
+    corsHandler {
       handleExceptions(exceptionHandler) {
         handleRejections(rejectionHandler) {
           pathSingleSlash {
             complete(StatusCodes.OK)
           } ~ pathPrefix("api") {
-            companyRoute
+            companyRoute ~ userRoute
           }
         }
       }

@@ -1,11 +1,11 @@
 /**/
-package org.ems
+package org.ems.cm
 
 import akka.actor.Actor
 import akka.event.slf4j.SLF4JLogging
-import org.ems.database.ImportExportDao
-import org.ems.entities._
 import akka.pattern.pipe
+import org.ems.cm.database.ImportExportDao
+import org.ems.cm.entities._
 
 class CompaniesSystem extends Actor with SLF4JLogging {
   implicit val ec = context.system.dispatcher

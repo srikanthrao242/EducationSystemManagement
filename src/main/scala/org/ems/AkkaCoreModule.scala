@@ -2,6 +2,7 @@
 package org.ems
 
 import akka.actor.ActorSystem
+
 import scala.concurrent.ExecutionContextExecutor
 
 trait AkkaCoreModule {

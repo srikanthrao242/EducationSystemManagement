@@ -7,7 +7,6 @@ import org.ems.config.ESMConfig
 
 import scala.util.{Failure, Success}
 
-
 trait WebServer  extends SLF4JLogging{
   this: AkkaCoreModule
     with Router =>

@@ -1,14 +1,13 @@
 /**/
-package org.ems.database
+package org.ems.cm.database
 
 import akka.event.slf4j.SLF4JLogging
 import cats.effect._
 import doobie._
 import doobie.implicits._
-import org.ems.entities.{Company, InsertCompany}
+import org.ems.cm.entities.{Company, InsertCompany}
 import spray.json._
-import org.ems.entities.CompanySer._
-
+import org.ems.cm.entities.CompanySer._
 object ImportExportDao extends SLF4JLogging {
   val table = "companies"
   val keyCol = "id"
@@ -19,7 +18,10 @@ object ImportExportDao extends SLF4JLogging {
                      "mobile",
                      "id",
                      "registerdate",
-                     "registrationexp")
+                     "registrationexp",
+                     "companylogo",
+                     "whatsup",
+                     "user")
 
   def insertCompany(company: InsertCompany): IO[Int] = {
     log.debug(s"company To Insert $company")
@@ -36,7 +38,7 @@ object ImportExportDao extends SLF4JLogging {
   }
 
   def deleteCompany(id: Int): IO[Int] = {
-    val queryString = s"""DELETE FROM $table where $keyCol = $id"""
+    val queryString = s"""DELETE FROM $table where $keyCol = ?"""
     log.debug(s"$queryString")
     DbModule.transactor.use { xa =>
       {

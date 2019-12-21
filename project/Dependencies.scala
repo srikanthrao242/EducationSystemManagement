@@ -4,6 +4,7 @@ object Dependencies {
 
   val serviceMod = "service"
   val companyMgtMod = "company management"
+  val userMod = "user management"
 
   val akka = "2.6.1"
   val akka_http = "10.1.11"

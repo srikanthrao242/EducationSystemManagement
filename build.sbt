@@ -12,9 +12,8 @@ lazy val baseSettings = Seq(
   scalaVersion := "2.13.1"
 )
 
-lazy val service = project.in(file(serviceMod))
-
 lazy val companyMgt = project.in(file(companyMgtMod))
+lazy val user = project.in(file(userMod))
 
 val rootDependencies =
   akkaDep ++
@@ -26,6 +25,6 @@ val rootDependencies =
 
 lazy val root = (project in file("."))
   .settings(name := _name)
-  .aggregate(service, companyMgt)
-  .dependsOn(service, companyMgt)
+  .aggregate(companyMgt, user)
+  .dependsOn(companyMgt, user)
   .settings(libraryDependencies ++= rootDependencies)

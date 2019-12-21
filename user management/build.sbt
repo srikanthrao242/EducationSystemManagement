@@ -1,6 +1,7 @@
+/**/
 import Dependencies._
 
-val _name = serviceMod
+val _name = userMod
 val _version = "0.0.1"
 
 lazy val baseSettings = Seq(
@@ -10,10 +11,10 @@ lazy val baseSettings = Seq(
   scalaVersion := "2.13.1"
 )
 
-lazy val service =
+lazy val user =
   project
     .in(file("."))
     .settings(name := _name)
     .settings(
-      libraryDependencies ++= (akkaDep ++ loggingDep)
+      libraryDependencies ++= (akkaDep ++ loggingDep ++ pureConfigDep ++ doobieDep)
     )

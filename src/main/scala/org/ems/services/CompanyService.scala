@@ -1,11 +1,10 @@
 /**/
 package org.ems.services
 
-import akka.actor.{Actor, ActorRef}
+import akka.actor.ActorRef
 import akka.util.Timeout
-import org.ems.entities.{AddCompanies, Company, DeleteCompany, GetAllCompanies, GetCompany, InsertCompany, UpdateCompanies}
-import akka.actor._
 import akka.pattern.ask
+import org.ems.cm.entities._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._

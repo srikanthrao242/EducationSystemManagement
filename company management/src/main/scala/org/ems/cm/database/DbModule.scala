@@ -1,10 +1,11 @@
 /**/
-package org.ems.database
+package org.ems.cm.database
 
 import cats.effect._
 import doobie.hikari.HikariTransactor
 import doobie.util.ExecutionContexts
-import org.ems.config.{CompanyConfig, DBConfig}
+import org.ems.cm.config.{CompanyConfig, DBConfig}
+import org.ems.cm.config.CompanyConfig
 
 object DbModule {
 

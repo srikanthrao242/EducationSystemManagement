@@ -1,5 +1,6 @@
 /**/
-package org.ems.entities
+package org.ems.cm.entities
+
 import java.sql.Timestamp
 
 import spray.json._
@@ -11,13 +12,19 @@ case class Company(address: Option[String],
                    mobile: Option[String],
                    id: Option[Int],
                    registerdate: Option[Timestamp],
-                   registrationexp: Option[Timestamp])
+                   registrationexp: Option[Timestamp],
+                   companylogo:Option[String],
+                   whatsup:Option[String],
+                   isActive: Option[Boolean])
 
 case class InsertCompany(address: Option[String],
                          city: Option[String],
                          companyname: Option[String],
                          email: Option[String],
-                         mobile: Option[String])
+                         mobile: Option[String],
+                         companylogo:Option[String],
+                         whatsup:Option[String],
+                           isActive: Option[Boolean])
 
 case object GetAllCompanies
 case class GetCompany(id: Int)
@@ -33,6 +40,6 @@ object CompanySer {
       case _ => throw new DeserializationException("Error info you want here ...")
     }
   }
-  implicit val companyF: RootJsonFormat[Company] = jsonFormat8(Company)
-  implicit val insertCompanyF: RootJsonFormat[InsertCompany] = jsonFormat5(InsertCompany)
+  implicit val companyF: RootJsonFormat[Company] = jsonFormat11(Company)
+  implicit val insertCompanyF: RootJsonFormat[InsertCompany] = jsonFormat8(InsertCompany)
 }

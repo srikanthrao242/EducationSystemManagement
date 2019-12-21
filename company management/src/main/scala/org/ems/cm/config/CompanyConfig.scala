@@ -1,5 +1,5 @@
 /**/
-package org.ems.config
+package org.ems.cm.config
 
 import pureconfig.generic.ProductHint
 import pureconfig.{CamelCase, ConfigFieldMapping, ConfigSource}

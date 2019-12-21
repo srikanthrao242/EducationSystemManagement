@@ -1,25 +1,23 @@
-/*
- */
-package org.ems.config
+/**/
+package org.ems.um.config
 
-import pureconfig._
 import pureconfig.generic.ProductHint
+import pureconfig.{CamelCase, ConfigFieldMapping, ConfigSource}
 import pureconfig.generic.auto._
-case class HttpConfig(host: String, port: Int)
+
 case class DBConfig(url: String,
                     driver: String,
                     username: String,
                     password: String,
                     connectTimeout: String,
                     poolSize: Int)
-case class ClientHttp(host: String, port: Int)
-case class EMS(http: HttpConfig, client: ClientHttp)
-case class EmsConf(`education-management-system`: EMS)
+case class UsConfig(db:DBConfig)
+case class UserConfig(`education-management-system`:UsConfig)
 
-object ESMConfig {
+object UserConfig {
   implicit def productHint[T]: ProductHint[T] =
     ProductHint(ConfigFieldMapping(CamelCase, CamelCase))
-  val config = ConfigSource.default.load[EmsConf] match {
+  val config = ConfigSource.default.load[UserConfig] match {
     case Right(c) => c.`education-management-system`
     case Left(e) =>
       throw new RuntimeException("Config error: " + e.head)
