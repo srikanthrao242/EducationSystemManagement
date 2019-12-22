@@ -5,7 +5,7 @@ import akka.event.slf4j.SLF4JLogging
 import cats.effect._
 import doobie._
 import doobie.implicits._
-import org.ems.cm.entities.{Company, InsertCompany}
+import org.ems.cm.entities.Company
 import spray.json._
 import org.ems.cm.entities.CompanySer._
 object ImportExportDao extends SLF4JLogging {
@@ -21,17 +21,17 @@ object ImportExportDao extends SLF4JLogging {
                      "registrationexp",
                      "companylogo",
                      "whatsup",
-                     "user")
+                     "isActive",
+                     "numberofdays")
 
-  def insertCompany(company: InsertCompany): IO[Int] = {
+  def insertCompany(company: Company): IO[Int] = {
     log.debug(s"company To Insert $company")
-    val companyFields = company.toJson.asJsObject.fields.keys.toList
     val queryStr =
-      s"""INSERT INTO $table (${companyFields.mkString(", ")})
-        VALUES (${List.fill(companyFields.length)("?").mkString(", ")})"""
+      s"""INSERT INTO $table (${columns.mkString(", ")})
+        VALUES (${List.fill(columns.length)("?").mkString(", ")})"""
     log.debug(s"$queryStr")
     DbModule.transactor.use { xa =>
-      Update[InsertCompany](queryStr)
+      Update[Company](queryStr,None)
         .withUniqueGeneratedKeys[Int](keyCol)(company)
         .transact(xa)
     }

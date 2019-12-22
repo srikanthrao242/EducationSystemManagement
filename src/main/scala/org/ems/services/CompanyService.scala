@@ -27,7 +27,7 @@ class CompanyService(company: ActorRef)(implicit val ec: ExecutionContext) {
       comp <- (company ? DeleteCompany(id)).mapTo[Int]
     } yield comp
 
-  def addCompany(compInput: InsertCompany): Future[Int] =
+  def addCompany(compInput: Company): Future[Int] =
     for {
       comp <- (company ? AddCompanies(compInput)).mapTo[Int]
     } yield comp

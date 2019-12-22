@@ -18,7 +18,7 @@ case class User(address: Option[String],
                 `profileimg`: Option[String],
                 `signature`: Option[String],
                 `createdby`: Option[Int],
-                  isActive: Option[Boolean])
+                isActive: Option[Boolean])
 
 
 case object GetAllUsers

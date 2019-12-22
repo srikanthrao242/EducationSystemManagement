@@ -10,7 +10,7 @@ import org.ems.cm.entities._
 class CompaniesSystem extends Actor with SLF4JLogging {
   implicit val ec = context.system.dispatcher
   override def receive: Receive = {
-    case AddCompanies(company: InsertCompany) =>
+    case AddCompanies(company: Company) =>
       log.debug(s"got company to add $company")
       ImportExportDao.insertCompany(company).unsafeToFuture().pipeTo(sender)(self)
     case UpdateCompanies(company: Company) =>

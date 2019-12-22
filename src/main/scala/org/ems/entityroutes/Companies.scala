@@ -33,7 +33,7 @@ trait Companies extends RouteConcatenation with SLF4JLogging {
         }
       } ~
       post {
-        entity(as[InsertCompany]) { comp: InsertCompany =>
+        entity(as[Company]) { comp: Company =>
           log.debug(s"Got request for insert $comp")
           complete(companyService.addCompany(comp).map(_.toString()))
         }
