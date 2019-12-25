@@ -10,7 +10,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import akka.pattern.ask
 
 class UserService(user: ActorRef)(implicit ec: ExecutionContext) {
-  implicit val timeout = Timeout(5 seconds)
+  implicit val timeout = Timeout(10 seconds)
 
   def getAllUsers: Future[List[User]] =
     for {
@@ -32,14 +32,18 @@ class UserService(user: ActorRef)(implicit ec: ExecutionContext) {
       au <- (user ? AddUser(userIn)).mapTo[Int]
     } yield au
 
-  def updateUser(userIn: User): Future[Int] = {
-    if(userIn.id.isEmpty){
+  def updateUser(userIn: User): Future[Int] =
+    if (userIn.id.isEmpty) {
       throw new Exception("Id is mandatory Field for update")
-    }else{
+    } else {
       for {
         uu <- (user ? UpdateUser(userIn)).mapTo[Int]
       } yield uu
     }
-  }
+
+  def authenticateUser(auth: Authenticate): Future[Option[User]] =
+    for {
+      uu <- (user ? auth).mapTo[Option[User]]
+    } yield uu
 
 }

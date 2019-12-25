@@ -10,7 +10,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
 
 class CompanyService(company: ActorRef)(implicit val ec: ExecutionContext) {
-  implicit val timeout = Timeout(5 seconds)
+  implicit val timeout = Timeout(10 seconds)
 
   def getAllCompanies: Future[List[Company]] =
     for {

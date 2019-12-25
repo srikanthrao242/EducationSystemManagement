@@ -18,7 +18,8 @@ case class User(address: Option[String],
                 `profileimg`: Option[String],
                 `signature`: Option[String],
                 `createdby`: Option[Int],
-                isActive: Option[Boolean])
+                isActive: Option[Boolean],
+                password: Option[String])
 
 
 case object GetAllUsers
@@ -27,6 +28,7 @@ case class DeleteUser(id: Int)
 case class UpdateUser(user: User)
 case class AddUser(user: User)
 case class AddSubUser(user: User, createdBy: Int)
+case class Authenticate(email: String, password: String)
 
 object UserSer {
   implicit object DateJsonFormat extends RootJsonFormat[Timestamp] {
@@ -36,7 +38,8 @@ object UserSer {
       case _ => throw new DeserializationException("Error info you want here ...")
     }
   }
-  implicit val userF: RootJsonFormat[User] = jsonFormat14(User)
+  implicit val userF: RootJsonFormat[User] = jsonFormat15(User)
+  implicit val authenticateF: RootJsonFormat[Authenticate] = jsonFormat2(Authenticate)
 }
 
 

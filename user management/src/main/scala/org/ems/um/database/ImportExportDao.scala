@@ -5,32 +5,37 @@ import akka.event.slf4j.SLF4JLogging
 import cats.effect._
 import doobie._
 import doobie.implicits._
+import org.ems.um.database.ImportExportDao.log
 import spray.json._
-import org.ems.um.entities.User
+import org.ems.um.entities.{Authenticate, User}
 import org.ems.um.entities.UserSer._
 object ImportExportDao extends SLF4JLogging {
   val table = "user"
   val keyCol = "id"
-  val columns = List("address",
-                     "city",
-                     "companyname",
-                     "email",
-                     "mobile",
-                     "id",
-                     "registerdate",
-                     "registrationexp",
-                     "companyid",
-                     "usertype",
-                     "profileimg",
-                     "signature",
-                     "createdby")
+
+  val columns = List(
+    "address",
+    "city",
+    "name",
+    "email",
+    "mobile",
+    "id",
+    "registerdate",
+    "registrationexp",
+    "companyid",
+    "usertype",
+    "profileimg",
+    "signature",
+    "createdby",
+    "isActive",
+    "password"
+  )
 
   def insertUser(user: User): IO[Int] = {
     log.debug(s"user To Insert $user")
-    val companyFields = user.toJson.asJsObject.fields.keys.toList
     val queryStr =
-      s"""INSERT INTO $table (${companyFields.mkString(", ")})
-        VALUES (${List.fill(companyFields.length)("?").mkString(", ")})"""
+      s"""INSERT INTO $table (${columns.mkString(", ")})
+        VALUES (${List.fill(columns.length)("?").mkString(", ")})"""
     log.debug(s"$queryStr")
     DbModule.transactor.use { xa =>
       Update[User](queryStr)
@@ -86,6 +91,19 @@ object ImportExportDao extends SLF4JLogging {
     DbModule.transactor.use { xa =>
       {
         Query0[User](queryString).stream.transact(xa).compile.toList
+      }
+    }
+  }
+
+  def checkAuthentication(auth: Authenticate): IO[Option[User]] = {
+    val queryString =
+      s""" select ${columns.mkString(", ")}
+         | from $table where email = '${auth.email}' and password = '${auth.password}'
+         |""".stripMargin
+    log.debug(s"$queryString")
+    DbModule.transactor.use { xa =>
+      {
+        Query0[User](queryString).option.transact(xa)
       }
     }
   }

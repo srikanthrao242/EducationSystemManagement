@@ -26,6 +26,9 @@ class UserManagementSystem extends Actor with SLF4JLogging {
     case DeleteUser(id) =>
       log.debug(s"got message to get user of $id")
       ImportExportDao.deleteUser(id).unsafeToFuture().pipeTo(sender)(self)
+    case auth: Authenticate =>
+      log.debug(s"got message to authenticate user of $auth")
+      ImportExportDao.checkAuthentication(auth).unsafeToFuture().pipeTo(sender)(self)
     case _ =>
       log.debug(s"Got default message")
   }
