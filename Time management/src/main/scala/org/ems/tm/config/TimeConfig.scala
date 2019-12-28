@@ -1,5 +1,5 @@
 /**/
-package org.ems.um.config
+package org.ems.tm.config
 
 import pureconfig.generic.ProductHint
 import pureconfig.{CamelCase, ConfigFieldMapping, ConfigSource}
@@ -11,14 +11,13 @@ case class DBConfig(url: String,
                     password: String,
                     connectTimeout: String,
                     poolSize: Int)
-case class Constants(db_prefix: String)
-case class UsConfig(db:DBConfig,constants: Constants)
-case class UserConfig(`education-management-system`:UsConfig)
+case class TimeConf(db:DBConfig)
+case class TimeConfig(`education-management-system`:TimeConf)
 
-object UserConfig {
+object TimeConfig {
   implicit def productHint[T]: ProductHint[T] =
     ProductHint(ConfigFieldMapping(CamelCase, CamelCase))
-  val config = ConfigSource.default.load[UserConfig] match {
+  val config = ConfigSource.default.load[TimeConfig] match {
     case Right(c) => c.`education-management-system`
     case Left(e) =>
       throw new RuntimeException("Config error: " + e.head)

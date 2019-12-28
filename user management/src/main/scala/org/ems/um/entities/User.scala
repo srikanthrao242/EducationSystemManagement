@@ -30,6 +30,9 @@ case class AddUser(user: User)
 case class AddSubUser(user: User, createdBy: Int)
 case class Authenticate(email: String, password: String)
 
+case class CreateSchema(userId: Int)
+case class CreateEmployee(schema:String)
+
 object UserSer {
   implicit object DateJsonFormat extends RootJsonFormat[Timestamp] {
     override def write(obj: Timestamp): JsString = JsString(obj.toString)

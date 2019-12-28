@@ -14,6 +14,8 @@ lazy val baseSettings = Seq(
 
 lazy val companyMgt = project.in(file(companyMgtMod))
 lazy val user = project.in(file(userMod))
+lazy val employee = project.in(file(employeeMod))
+lazy val timeMgt = project.in(file(timeManagementMod))
 
 val rootDependencies =
   akkaDep ++
@@ -23,8 +25,8 @@ val rootDependencies =
   loggingDep ++
   doobieDep
 
-lazy val root = (project in file("."))
+lazy val service = (project in file(serviceMod))
   .settings(name := _name)
-  .aggregate(companyMgt, user)
-  .dependsOn(companyMgt, user)
+  .aggregate(companyMgt, user, employee, timeMgt)
+  .dependsOn(companyMgt, user, employee, timeMgt)
   .settings(libraryDependencies ++= rootDependencies)

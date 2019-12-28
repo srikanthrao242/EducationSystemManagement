@@ -10,7 +10,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import akka.pattern.ask
 
 class UserService(user: ActorRef)(implicit ec: ExecutionContext) {
-  implicit val timeout = Timeout(10 seconds)
+  implicit val timeout = Timeout(100 seconds)
 
   def getAllUsers: Future[List[User]] =
     for {
