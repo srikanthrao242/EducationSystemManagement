@@ -34,5 +34,8 @@ trait SalaryService {
   def deleteSalary(id: Int): IO[Int] = DbModule.transactor.use { xa =>
     delete(id).transact(xa)
   }
+  def addSalary(salary: Salary): IO[Int] = DbModule.transactor.use{ xa=>
+    insert(salary).transact(xa)
+  }
 
 }

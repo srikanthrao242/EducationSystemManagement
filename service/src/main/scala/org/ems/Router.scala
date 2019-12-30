@@ -5,7 +5,7 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives.{complete, handleExceptions, handleRejections, pathPrefix, pathSingleSlash}
 import akka.http.scaladsl.server.{Route, RouteConcatenation}
 import org.ems.config.ESMConfig
-import org.ems.entityroutes.{Companies, Register, Users}
+import org.ems.entityroutes._
 import org.ems.util.CORSHandler
 import org.ems.util.ExceptionHandling._
 trait Router
@@ -13,6 +13,9 @@ trait Router
   with Companies
   with Users
   with Register
+  with Employees
+  with Salaries
+  with Banks
   with CORSHandler {
   this: AkkaCoreModule =>
   val client = ESMConfig.config.client
@@ -23,7 +26,7 @@ trait Router
           pathSingleSlash {
             complete(StatusCodes.OK)
           } ~ pathPrefix("api") {
-            companyRoute  ~ registerRoute ~ userRoute
+            companyRoute ~ registerRoute ~ userRoute ~ employeesRoute ~ salaryRoute ~ bankRoute
           }
         }
       }

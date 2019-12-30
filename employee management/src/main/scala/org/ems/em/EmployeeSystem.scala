@@ -15,7 +15,8 @@ class EmployeeSystem
   with SLF4JLogging {
   implicit val ec = context.system.dispatcher
 
-  // scalafrmt:off
+
+  // format: off
   override def receive: Receive = {
 
     case GetAllEmployeesProfile =>
@@ -23,10 +24,10 @@ class EmployeeSystem
       getAllEmployeesProfiles.unsafeToFuture().pipeTo(sender)(self)
     case AddEmployeeProfile(employee) =>
       log.info(s"Got message to add employee $employee")
-      sender ! addEmployeeProfile(employee).unsafeToFuture()
+      addEmployeeProfile(employee).unsafeToFuture().pipeTo(sender)(self)
     case DeleteEmployeeProfile(id) =>
       log.info(s"Got message to delete employee $id")
-      sender ! deleteEmployeeProfile(id).unsafeToFuture()
+      deleteEmployeeProfile(id).unsafeToFuture().pipeTo(sender)(self)
     case UpdateEmployeeProfile(employee) =>
       log.info(s"Got message to update employee $employee")
       updateEmployeeProfile(employee).unsafeToFuture().pipeTo(sender)(self)
@@ -34,6 +35,9 @@ class EmployeeSystem
     case GetAllSalaries =>
       log.info(s"Got message to get all salaries")
       getAllSalaries.unsafeToFuture().pipeTo(sender)(self)
+    case AddEmployeeSalary(sal)=>
+      log.info(s"Got message to add salary $sal")
+      addSalary(sal).unsafeToFuture().pipeTo(sender)(self)
     case GetEmployeeSalary(id) =>
       log.info(s"Got message to get an employee salary details with id: $id")
       sender ! getEmployeeSalary(id).unsafeToFuture()
