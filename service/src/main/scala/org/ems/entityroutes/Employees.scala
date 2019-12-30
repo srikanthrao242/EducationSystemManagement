@@ -23,7 +23,7 @@ trait Employees extends RouteConcatenation with SLF4JLogging {
         log.debug(s"Got Request to delete employee $id")
         complete(
           employeeService
-            .doProcess[_, Int](DeleteEmployeeProfile(id))
+            .doProcess[DeleteEmployeeProfile, Int](DeleteEmployeeProfile(id))
             .map(_.toString)
         )
       }
@@ -33,7 +33,7 @@ trait Employees extends RouteConcatenation with SLF4JLogging {
         log.debug(s"Got Request to add employee $emp")
         complete(
           employeeService
-            .doProcess[_, Int](AddEmployeeProfile(emp))
+            .doProcess[AddEmployeeProfile, Int](AddEmployeeProfile(emp))
             .map(_.toString)
         )
       }
@@ -42,15 +42,17 @@ trait Employees extends RouteConcatenation with SLF4JLogging {
       log.debug(s"Got Request to get all Employees")
       complete(
         employeeService
-          .doProcess[_, List[Employee]](GetAllEmployeesProfile)
+          .doProcess[GetAllEmployeesProfile.type, List[Employee]](
+            GetAllEmployeesProfile
+          )
       )
     } ~
-    put{
-      entity(as[Employee]){emp=>
+    put {
+      entity(as[Employee]) { emp =>
         log.debug(s"Got Request to put employee details ")
         complete(
           employeeService
-            .doProcess[_, Int](UpdateEmployeeProfile(emp))
+            .doProcess[UpdateEmployeeProfile, Int](UpdateEmployeeProfile(emp))
             .map(_.toString)
         )
       }

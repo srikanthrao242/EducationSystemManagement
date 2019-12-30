@@ -23,13 +23,18 @@ trait Salaries extends RouteConcatenation with SLF4JLogging {
   val salaryRoute = pathPrefix("salaries") {
     get {
       log.debug(s"Got Request to all employees salaries")
-      complete(salaryServices.doProcess[_, List[Salary]](GetAllSalaries))
+      complete(
+        salaryServices
+          .doProcess[GetAllSalaries.type, List[Salary]](GetAllSalaries)
+      )
     } ~
     get {
       path(IntNumber) { id =>
         log.debug(s"Got Request to get employee salary $id")
         complete(
-          salaryServices.doProcess[_, Option[Salary]](GetEmployeeSalary(id))
+          salaryServices.doProcess[GetEmployeeSalary, Option[Salary]](
+            GetEmployeeSalary(id)
+          )
         )
       }
     } ~
@@ -38,7 +43,7 @@ trait Salaries extends RouteConcatenation with SLF4JLogging {
         log.debug(s"Got request to add employee salary $sal")
         complete(
           salaryServices
-            .doProcess[_, Int](AddEmployeeSalary(sal))
+            .doProcess[AddEmployeeSalary, Int](AddEmployeeSalary(sal))
             .map(_.toString)
         )
       }
@@ -47,7 +52,9 @@ trait Salaries extends RouteConcatenation with SLF4JLogging {
       entity(as[Salary]) { sal =>
         log.debug(s"Got request to update employee salary $sal")
         complete(
-          salaryServices.doProcess[_, Int](UpdateSalary(sal)).map(_.toString)
+          salaryServices
+            .doProcess[UpdateSalary, Int](UpdateSalary(sal))
+            .map(_.toString)
         )
       }
     }

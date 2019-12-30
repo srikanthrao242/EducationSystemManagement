@@ -23,19 +23,27 @@ trait Banks extends RouteConcatenation with SLF4JLogging {
   val bankRoute = pathPrefix("banks") {
     get {
       log.debug(s"Got request to get all banks details")
-      complete(bankServices.doProcess[_, List[BankDetails]](GetAllBankDetails))
+      complete(
+        bankServices.doProcess[GetAllBankDetails.type, List[BankDetails]](
+          GetAllBankDetails
+        )
+      )
     } ~
     path(IntNumber) { id =>
       get {
         log.debug(s"Got request to get banks details by id $id")
         complete(
-          bankServices.doProcess[_, Option[BankDetails]](GetBankDetails(id))
+          bankServices.doProcess[GetBankDetails, Option[BankDetails]](
+            GetBankDetails(id)
+          )
         )
       } ~
       delete {
         log.debug(s"Got request to delete bank details of id $id")
         complete(
-          bankServices.doProcess[_, Int](DeleteBankDetails(id)).map(_.toString)
+          bankServices
+            .doProcess[DeleteBankDetails, Int](DeleteBankDetails(id))
+            .map(_.toString)
         )
       }
     } ~ post {
@@ -43,7 +51,9 @@ trait Banks extends RouteConcatenation with SLF4JLogging {
         log.debug(s"Got request to add bank details $bank")
         complete(
           bankServices
-            .doProcess[_, Int](AddEmployeeBankDetails(bank))
+            .doProcess[AddEmployeeBankDetails, Int](
+              AddEmployeeBankDetails(bank)
+            )
             .map(_.toString)
         )
       }
@@ -52,7 +62,7 @@ trait Banks extends RouteConcatenation with SLF4JLogging {
         log.debug(s"Got request to update the bank details $bank")
         complete(
           bankServices
-            .doProcess[_, Int](UpdateBankDetails(bank))
+            .doProcess[UpdateBankDetails, Int](UpdateBankDetails(bank))
             .map(_.toString)
         )
       }
