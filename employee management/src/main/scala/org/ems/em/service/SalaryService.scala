@@ -17,25 +17,25 @@ trait SalaryService {
   val salDn: Aux[Salary, Int] = Dao[Salary]
   import salDn._
 
-  def getEmployeeSalary(id: Int): IO[Option[Salary]] = DbModule.transactor.use {
+  def getEmployeeSalary(db:String,id: Int): IO[Option[Salary]] = DbModule.transactor.use {
     xa =>
-      find(id).transact(xa)
+      find(db,id).transact(xa)
   }
-  def getAllSalaries: IO[List[Salary]] = DbModule.transactor.use { xa =>
-    findAll.transact(xa).compile.toList
+  def getAllSalaries(db:String): IO[List[Salary]] = DbModule.transactor.use { xa =>
+    findAll(db).transact(xa).compile.toList
   }
-  def updateSalary(salary: Salary): IO[Int] = DbModule.transactor.use { xa =>
+  def updateSalary(db:String,salary: Salary): IO[Int] = DbModule.transactor.use { xa =>
     salary.id.fold {
       throw new Exception(s"Need id for salary update")
     } { id =>
-      update(id, salary.copy(id = None)).transact(xa)
+      update(db,id, salary.copy(id = None)).transact(xa)
     }
   }
-  def deleteSalary(id: Int): IO[Int] = DbModule.transactor.use { xa =>
-    delete(id).transact(xa)
+  def deleteSalary(db:String,id: Int): IO[Int] = DbModule.transactor.use { xa =>
+    delete(db,id).transact(xa)
   }
-  def addSalary(salary: Salary): IO[Int] = DbModule.transactor.use{ xa=>
-    insert(salary).transact(xa)
+  def addSalary(db:String,salary: Salary): IO[Int] = DbModule.transactor.use{ xa=>
+    insert(db,salary).transact(xa)
   }
 
 }

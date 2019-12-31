@@ -15,31 +15,31 @@ trait BankServices {
   val bankDn: Aux[BankDetails, Int] = Dao[BankDetails]
   import bankDn._
 
-  def getAllBankDetails: IO[List[BankDetails]] = DbModule.transactor.use { xa =>
-    findAll.transact(xa).compile.toList
+  def getAllBankDetails(db:String): IO[List[BankDetails]] = DbModule.transactor.use { xa =>
+    findAll(db).transact(xa).compile.toList
   }
 
-  def getEmployeeBankDetails(id: Int): IO[Option[BankDetails]] =
+  def getEmployeeBankDetails(db:String,id: Int): IO[Option[BankDetails]] =
     DbModule.transactor.use { xa =>
-      find(id).transact(xa)
+      find(db,id).transact(xa)
     }
 
-  def updateBankDetails(bankDetails: BankDetails): IO[Int] =
+  def updateBankDetails(db:String,bankDetails: BankDetails): IO[Int] =
     DbModule.transactor.use { xa =>
       bankDetails.id.fold {
         throw new Exception(s"Need id to update bank details")
       } { id =>
-        update(id, bankDetails.copy(id = None)).transact(xa)
+        update(db,id, bankDetails.copy(id = None)).transact(xa)
       }
     }
 
-  def addEmployeeBankDetails(bankDetails: BankDetails): IO[Int] =
+  def addEmployeeBankDetails(db:String,bankDetails: BankDetails): IO[Int] =
     DbModule.transactor.use { xa =>
-      insert(bankDetails).transact(xa)
+      insert(db,bankDetails).transact(xa)
     }
 
-  def deleteBankDetails(id: Int): IO[Int] = DbModule.transactor.use { xa =>
-    delete(id).transact(xa)
+  def deleteBankDetails(db:String,id: Int): IO[Int] = DbModule.transactor.use { xa =>
+    delete(db,id).transact(xa)
   }
 
 }

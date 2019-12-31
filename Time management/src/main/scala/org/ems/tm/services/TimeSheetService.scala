@@ -16,22 +16,22 @@ trait TimeSheetService {
   val tsDn = Dao[TimeSheet]
   import tsDn._
 
-  def getTimeSheet(id: Int): IO[Option[TimeSheet]] = DbModule.transactor.use {
+  def getTimeSheet(db:String, id: Int): IO[Option[TimeSheet]] = DbModule.transactor.use {
     xa =>
-      find(id).transact(xa)
+      find(db,id).transact(xa)
   }
 
-  def addTimeSheet(timeSheet: TimeSheet): IO[Int] = DbModule.transactor.use {
+  def addTimeSheet(db:String, timeSheet: TimeSheet): IO[Int] = DbModule.transactor.use {
     xa =>
-      insert(timeSheet).transact(xa)
+      insert(db,timeSheet).transact(xa)
   }
 
-  def updateTimeSheet(timeSheet: TimeSheet): IO[Int] = DbModule.transactor.use {
+  def updateTimeSheet(db:String, timeSheet: TimeSheet): IO[Int] = DbModule.transactor.use {
     xa =>
       timeSheet.id.fold {
         throw new Exception(s"new timesheet id to update")
       } { id =>
-        update(id, timeSheet.copy(id = None)).transact(xa)
+        update(db,id, timeSheet.copy(id = None)).transact(xa)
       }
 
   }

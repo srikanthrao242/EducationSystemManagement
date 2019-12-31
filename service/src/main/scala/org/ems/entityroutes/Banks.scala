@@ -20,12 +20,12 @@ trait Banks extends RouteConcatenation with SLF4JLogging {
   val bankActor = actorSystem.actorOf(Props[EmployeeSystem], "Banks")
   val bankServices = new BankServices(bankActor)
 
-  val bankRoute = pathPrefix("banks") {
+  val bankRoute = pathPrefix("banks" / IntNumber) { userId=>
     get {
       log.debug(s"Got request to get all banks details")
       complete(
-        bankServices.doProcess[GetAllBankDetails.type, List[BankDetails]](
-          GetAllBankDetails
+        bankServices.doProcess[GetAllBankDetails, List[BankDetails]](
+          GetAllBankDetails(userId)
         )
       )
     } ~
@@ -34,7 +34,7 @@ trait Banks extends RouteConcatenation with SLF4JLogging {
         log.debug(s"Got request to get banks details by id $id")
         complete(
           bankServices.doProcess[GetBankDetails, Option[BankDetails]](
-            GetBankDetails(id)
+            GetBankDetails(userId,id)
           )
         )
       } ~
@@ -42,7 +42,7 @@ trait Banks extends RouteConcatenation with SLF4JLogging {
         log.debug(s"Got request to delete bank details of id $id")
         complete(
           bankServices
-            .doProcess[DeleteBankDetails, Int](DeleteBankDetails(id))
+            .doProcess[DeleteBankDetails, Int](DeleteBankDetails(userId,id))
             .map(_.toString)
         )
       }
@@ -52,7 +52,7 @@ trait Banks extends RouteConcatenation with SLF4JLogging {
         complete(
           bankServices
             .doProcess[AddEmployeeBankDetails, Int](
-              AddEmployeeBankDetails(bank)
+              AddEmployeeBankDetails(userId,bank)
             )
             .map(_.toString)
         )
@@ -62,7 +62,7 @@ trait Banks extends RouteConcatenation with SLF4JLogging {
         log.debug(s"Got request to update the bank details $bank")
         complete(
           bankServices
-            .doProcess[UpdateBankDetails, Int](UpdateBankDetails(bank))
+            .doProcess[UpdateBankDetails, Int](UpdateBankDetails(userId,bank))
             .map(_.toString)
         )
       }

@@ -15,19 +15,19 @@ trait HolidayService {
   val holDn = Dao[Holidays]
   import holDn._
 
-  def getHolidays(id: Int): IO[Option[Holidays]] = DbModule.transactor.use {
+  def getHolidays(db:String, id: Int): IO[Option[Holidays]] = DbModule.transactor.use {
     xa =>
-      find(id).transact(xa)
+      find(db,id).transact(xa)
   }
-  def addHoliday(holidays: Holidays): IO[Int] = DbModule.transactor.use { xa =>
-    insert(holidays).transact(xa)
+  def addHoliday(db:String, holidays: Holidays): IO[Int] = DbModule.transactor.use { xa =>
+    insert(db,holidays).transact(xa)
   }
-  def updateHolidays(holidays: Holidays): IO[Int] = DbModule.transactor.use {
+  def updateHolidays(db:String, holidays: Holidays): IO[Int] = DbModule.transactor.use {
     xa =>
       holidays.id.fold {
         throw new Exception(s"Need id to update the Holiday list")
       } { id =>
-        update(id, holidays.copy(id = None)).transact(xa)
+        update(db,id, holidays.copy(id = None)).transact(xa)
       }
   }
 

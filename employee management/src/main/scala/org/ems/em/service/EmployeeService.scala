@@ -17,30 +17,30 @@ trait EmployeeService {
   val empDn: Aux[Employee, Int] = Dao[Employee]
   import empDn._
 
-  def getAllEmployeesProfiles: IO[List[Employee]] = DbModule.transactor.use {
+  def getAllEmployeesProfiles(db:String): IO[List[Employee]] = DbModule.transactor.use {
     xa =>
-      findAll.transact(xa).compile.toList
+      findAll(db).transact(xa).compile.toList
   }
 
-  def getEmployeeProfile(id: Int): IO[Option[Employee]] =
+  def getEmployeeProfile(db:String, id: Int): IO[Option[Employee]] =
     DbModule.transactor.use { xa =>
-      find(id).transact(xa)
+      find(db,id).transact(xa)
     }
 
-  def deleteEmployeeProfile(id: Int): IO[Int] = DbModule.transactor.use { xa =>
-    delete(id).transact(xa)
+  def deleteEmployeeProfile(db:String, id: Int): IO[Int] = DbModule.transactor.use { xa =>
+    delete(db,id).transact(xa)
   }
 
-  def updateEmployeeProfile(employee: Employee): IO[Int] =
+  def updateEmployeeProfile(db:String, employee: Employee): IO[Int] =
     DbModule.transactor.use { xa =>
       employee.id
         .fold(throw new Exception("Employee Id is mandatory to update"))(id => {
-          update(id, employee.copy(id = None)).transact(xa)
+          update(db,id, employee.copy(id = None)).transact(xa)
         })
     }
 
-  def addEmployeeProfile(employee: Employee): IO[Int] = DbModule.transactor.use { xa =>
-    insert(employee).transact(xa)
+  def addEmployeeProfile(db:String, employee: Employee): IO[Int] = DbModule.transactor.use { xa =>
+    insert(db,employee).transact(xa)
   }
 
 }

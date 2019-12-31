@@ -10,7 +10,8 @@ case class DBConfig(url: String,
                     password: String,
                     connectTimeout: String,
                     poolSize: Int)
-case class EmpConfig(db:DBConfig)
+case class Constants(db_prefix:String)
+case class EmpConfig(db:DBConfig, constants: Constants)
 case class EmployeeConfig(`education-management-system`:EmpConfig)
 
 object EmployeeConfig {

@@ -1,24 +1,22 @@
 /**/
 package org.ems.em.entities
 
-case object GetAllEmployeesProfile
-case class GetEmployeeProfile(id:Int)
-case class AddEmployeeProfile(employee: Employee)
-case class UpdateEmployeeProfile(employee: Employee)
-case class DeleteEmployeeProfile(id:Int)
+case class GetAllEmployeesProfile(userId: Int)
+case class GetEmployeeProfile(userId: Int, id: Int)
+case class AddEmployeeProfile(userId: Int, employee: Employee)
+case class UpdateEmployeeProfile(userId: Int, employee: Employee)
+case class DeleteEmployeeProfile(userId: Int, id: Int)
 
-case object GetAllSalaries
-case class GetEmployeeSalary(salaryId:Int)
-case class UpdateSalary(salary: Salary)
-case class DeleteSalary(id:Int)
-case class AddEmployeeSalary(salary: Salary)
+case class GetAllSalaries(userId: Int)
+case class GetEmployeeSalary(userId: Int, salaryId: Int)
+case class UpdateSalary(userId: Int, salary: Salary)
+case class DeleteSalary(userId: Int, id: Int)
+case class AddEmployeeSalary(userId: Int, salary: Salary)
 
-case object GetAllBankDetails
-case class GetBankDetails(id:Int)
-case class UpdateBankDetails(bankDetails: BankDetails)
-case class DeleteBankDetails(id:Int)
-case class AddEmployeeBankDetails(bankDetails: BankDetails)
+case class GetAllBankDetails(userId: Int)
+case class GetBankDetails(userId: Int, id: Int)
+case class UpdateBankDetails(userId: Int, bankDetails: BankDetails)
+case class DeleteBankDetails(userId: Int, id: Int)
+case class AddEmployeeBankDetails(userId: Int, bankDetails: BankDetails)
 
-object RequestEntities {
-
-}
+object RequestEntities {}

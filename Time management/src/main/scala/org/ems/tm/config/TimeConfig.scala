@@ -11,7 +11,8 @@ case class DBConfig(url: String,
                     password: String,
                     connectTimeout: String,
                     poolSize: Int)
-case class TimeConf(db:DBConfig)
+case class Constants(db_prefix:String)
+case class TimeConf(db:DBConfig, constants: Constants)
 case class TimeConfig(`education-management-system`:TimeConf)
 
 object TimeConfig {

@@ -15,15 +15,15 @@ object DBUtil {
   trait Dao[A] {
     type Key
 
-    def insert(a: A): ConnectionIO[Key]
+    def insert(db:String, a: A): ConnectionIO[Key]
 
-    def find(k: Key): ConnectionIO[Option[A]]
+    def find(db:String, k: Key): ConnectionIO[Option[A]]
 
-    def findAll: Stream[ConnectionIO, A]
+    def findAll(db:String): Stream[ConnectionIO, A]
 
-    def update(k: Key, a: A): ConnectionIO[Int]
+    def update(db:String, k: Key, a: A): ConnectionIO[Int]
 
-    def delete(k: Key): ConnectionIO[Int]
+    def delete(db:String, k: Key): ConnectionIO[Int]
   }
 
   object Dao {
@@ -49,40 +49,40 @@ object DBUtil {
             void(ev)
             type Key = K
             val cols = ks.apply.toList.map(_.name)
-            def insert(a: A): ConnectionIO[Key] =
+            def insert(db:String, a: A): ConnectionIO[Key] =
               Update[A](
                 s"""
-                INSERT INTO $table (${cols.mkString(", ")})
+                INSERT INTO $db.$table (${cols.mkString(", ")})
                 VALUES (${cols.as("?").mkString(", ")})
               """).withUniqueGeneratedKeys[Key](keyCol)(a)
 
-            def find(key: Key): ConnectionIO[Option[A]] =
+            def find(db:String, key: Key): ConnectionIO[Option[A]] =
               Query[Key, A](
                 s"""
                 SELECT ${cols.mkString(", ")}
-                FROM $table
+                FROM $db.$table
                 WHERE $keyCol = ?
               """).option(key)
 
-            def findAll: Stream[ConnectionIO, A] =
+            def findAll(db:String): Stream[ConnectionIO, A] =
               Query0[A](
                 s"""
-                SELECT ${cols.mkString(", ")}
+                SELECT $db.${cols.mkString(", ")}
                 FROM $table
               """).stream
 
-            def update(k: Key, a: A): ConnectionIO[Int] =
+            def update(db:String, k: Key, a: A): ConnectionIO[Int] =
               Update[(A, Key)](
                 s"""
-                UPDATE $table
+                UPDATE $db.$table
                 SET ${cols.map(_ + " = ?").mkString(", ")}
                 WHERE $keyCol = ?
               """).run((a, k))
 
-            def delete(k: Key): ConnectionIO[Int] = {
+            def delete(db:String, k: Key): ConnectionIO[Int] = {
               Update[Key](
                 s"""
-                DELETE FROM $table
+                DELETE FROM $db.$table
                 WHERE $keyCol = ?
               """).run(k)
             }

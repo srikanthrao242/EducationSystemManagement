@@ -2,14 +2,14 @@
 package org.ems.tm.etities
 
 
-case class GetTimeSheet(id:Int)
-case class UpdateTimeSheet(timeSheet: TimeSheet)
-case class AddTimeSheet(timeSheet: TimeSheet)
+case class GetTimeSheet(userId:Int,id:Int)
+case class UpdateTimeSheet(userId:Int,timeSheet: TimeSheet)
+case class AddTimeSheet(userId:Int,timeSheet: TimeSheet)
 
-case class GetHolidays(id:Int)
-case class UpdateHolidays(holidays: Holidays)
-case class AddHoliday(holidays: Holidays)
-case object UpdateWeekOffs
+case class GetHolidays(userId:Int,id:Int)
+case class UpdateHolidays(userId:Int,holidays: Holidays)
+case class AddHoliday(userId:Int,holidays: Holidays)
+case class UpdateWeekOffs(userId:Int)
 
 object RequestEntities{
 

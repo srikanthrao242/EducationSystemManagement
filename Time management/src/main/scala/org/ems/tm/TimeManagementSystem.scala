@@ -6,6 +6,7 @@ import akka.event.slf4j.SLF4JLogging
 import org.ems.tm.etities._
 import org.ems.tm.services.{HolidayService, TimeSheetService}
 import akka.pattern.pipe
+import org.ems.tm.config.TimeConfig
 class TimeManagementSystem
   extends Actor
   with TimeSheetService
@@ -13,24 +14,26 @@ class TimeManagementSystem
   with SLF4JLogging {
   import context.dispatcher
   override def receive: Receive = {
-    case GetTimeSheet(id) =>
+    case GetTimeSheet(userId, id) =>
       log.info(s"Got message to get the time sheet data of id: $id")
-      getTimeSheet(id).unsafeToFuture().pipeTo(sender)(self)
-    case AddTimeSheet(timeSheet) =>
+      getTimeSheet(getDB(userId),id).unsafeToFuture().pipeTo(sender)(self)
+    case AddTimeSheet(userId,timeSheet) =>
       log.info(s"Got message to add time sheet $timeSheet")
-      sender ! addTimeSheet(timeSheet).unsafeToFuture()
-    case UpdateTimeSheet(timeSheet) =>
+      sender ! addTimeSheet(getDB(userId),timeSheet).unsafeToFuture()
+    case UpdateTimeSheet(userId,timeSheet) =>
       log.info(s"Got message to update the time sheet $timeSheet")
-      sender ! updateTimeSheet(timeSheet).unsafeToFuture()
+      sender ! updateTimeSheet(getDB(userId),timeSheet).unsafeToFuture()
 
-    case GetHolidays(id) =>
+    case GetHolidays(userId,id) =>
       log.info(s"Got message to get holiday details of id $id")
-      sender ! getHolidays(id).unsafeToFuture()
-    case AddHoliday(holidays) =>
+      sender ! getHolidays(getDB(userId),id).unsafeToFuture()
+    case AddHoliday(userId,holidays) =>
       log.info(s"Got message to add holiday $holidays")
-      sender ! addHoliday(holidays).unsafeToFuture()
-    case UpdateHolidays(holidays) =>
+      sender ! addHoliday(getDB(userId),holidays).unsafeToFuture()
+    case UpdateHolidays(userId,holidays) =>
       log.info(s"Got message to update the holiday $holidays")
-      sender ! updateHolidays(holidays).unsafeToFuture()
+      sender ! updateHolidays(getDB(userId),holidays).unsafeToFuture()
   }
+
+  def getDB(userId: Int) : String = s"${TimeConfig.config.constants.db_prefix}_$userId"
 }

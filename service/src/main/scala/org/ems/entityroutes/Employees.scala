@@ -17,13 +17,15 @@ trait Employees extends RouteConcatenation with SLF4JLogging {
   this: AkkaCoreModule =>
   val employeesActor = actorSystem.actorOf(Props[EmployeeSystem], "Employee")
   val employeeService = new EmployeeService(employeesActor)
-  val employeesRoute = pathPrefix("employees") {
+  val employeesRoute = pathPrefix("employees" / IntNumber) { userId =>
     delete {
       path(IntNumber) { id =>
-        log.debug(s"Got Request to delete employee $id")
+        log.debug(s"Got Request to delete employee $id from $userId")
         complete(
           employeeService
-            .doProcess[DeleteEmployeeProfile, Int](DeleteEmployeeProfile(id))
+            .doProcess[DeleteEmployeeProfile, Int](
+              DeleteEmployeeProfile(userId, id)
+            )
             .map(_.toString)
         )
       }
@@ -33,7 +35,7 @@ trait Employees extends RouteConcatenation with SLF4JLogging {
         log.debug(s"Got Request to add employee $emp")
         complete(
           employeeService
-            .doProcess[AddEmployeeProfile, Int](AddEmployeeProfile(emp))
+            .doProcess[AddEmployeeProfile, Int](AddEmployeeProfile(userId, emp))
             .map(_.toString)
         )
       }
@@ -42,8 +44,8 @@ trait Employees extends RouteConcatenation with SLF4JLogging {
       log.debug(s"Got Request to get all Employees")
       complete(
         employeeService
-          .doProcess[GetAllEmployeesProfile.type, List[Employee]](
-            GetAllEmployeesProfile
+          .doProcess[GetAllEmployeesProfile, List[Employee]](
+            GetAllEmployeesProfile(userId)
           )
       )
     } ~
@@ -52,7 +54,9 @@ trait Employees extends RouteConcatenation with SLF4JLogging {
         log.debug(s"Got Request to put employee details ")
         complete(
           employeeService
-            .doProcess[UpdateEmployeeProfile, Int](UpdateEmployeeProfile(emp))
+            .doProcess[UpdateEmployeeProfile, Int](
+              UpdateEmployeeProfile(userId, emp)
+            )
             .map(_.toString)
         )
       }

@@ -20,12 +20,12 @@ trait Salaries extends RouteConcatenation with SLF4JLogging {
   val salaryActor = actorSystem.actorOf(Props[EmployeeSystem], "Salary")
   val salaryServices = new SalaryServices(salaryActor)
 
-  val salaryRoute = pathPrefix("salaries") {
+  val salaryRoute = pathPrefix("salaries" / IntNumber) { userId =>
     get {
       log.debug(s"Got Request to all employees salaries")
       complete(
         salaryServices
-          .doProcess[GetAllSalaries.type, List[Salary]](GetAllSalaries)
+          .doProcess[GetAllSalaries, List[Salary]](GetAllSalaries(userId))
       )
     } ~
     get {
@@ -33,7 +33,7 @@ trait Salaries extends RouteConcatenation with SLF4JLogging {
         log.debug(s"Got Request to get employee salary $id")
         complete(
           salaryServices.doProcess[GetEmployeeSalary, Option[Salary]](
-            GetEmployeeSalary(id)
+            GetEmployeeSalary(userId, id)
           )
         )
       }
@@ -43,7 +43,7 @@ trait Salaries extends RouteConcatenation with SLF4JLogging {
         log.debug(s"Got request to add employee salary $sal")
         complete(
           salaryServices
-            .doProcess[AddEmployeeSalary, Int](AddEmployeeSalary(sal))
+            .doProcess[AddEmployeeSalary, Int](AddEmployeeSalary(userId, sal))
             .map(_.toString)
         )
       }
@@ -53,7 +53,7 @@ trait Salaries extends RouteConcatenation with SLF4JLogging {
         log.debug(s"Got request to update employee salary $sal")
         complete(
           salaryServices
-            .doProcess[UpdateSalary, Int](UpdateSalary(sal))
+            .doProcess[UpdateSalary, Int](UpdateSalary(userId, sal))
             .map(_.toString)
         )
       }
