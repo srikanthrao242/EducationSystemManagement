@@ -47,7 +47,7 @@ class InsertEmployee(ref: ActorRef)
     case AddBank(userId, salId, bank) =>
       addEmployeeBankDetails(getDB(userId), bank).unsafeToFuture() andThen {
         case Success(id) =>
-          ref ! (bank.employeeId.get, salId, id)
+          ref ! MessageBack(bank.employeeId.get, salId, id)
         case Failure(ex) =>
           for {
             _ <- deleteEmployeeProfile(getDB(userId), bank.employeeId.get)
