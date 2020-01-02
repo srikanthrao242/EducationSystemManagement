@@ -13,10 +13,20 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import spray.json._
 import EmployeesSer._
 import DefaultJsonProtocol._
+import org.ems.em.service.InsertEmployee
+import akka.pattern.ask
+import akka.util.Timeout
+
+import scala.concurrent.duration._
+
 trait Employees extends RouteConcatenation with SLF4JLogging {
   this: AkkaCoreModule =>
+  case class AddEmployeePSB(employee: Employee, salary: Salary, bankDetails: BankDetails)
+  implicit val addEmpPsbf = jsonFormat3(AddEmployeePSB)
   val employeesActor = actorSystem.actorOf(Props[EmployeeSystem], "Employee")
   val employeeService = new EmployeeService(employeesActor)
+  val addActor = actorSystem.actorOf(Props[AddEmployeeAct],"AddEmployee")
+  implicit val timeout = Timeout(100 seconds)
   val employeesRoute = pathPrefix("employees" / IntNumber) { userId =>
     delete {
       path(IntNumber) { id =>
@@ -40,6 +50,13 @@ trait Employees extends RouteConcatenation with SLF4JLogging {
         )
       }
     } ~
+    post{
+      entity(as[AddEmployeePSB]) { emp=>
+        log.debug(s"Got Request to add employee $emp")
+        val res = addActor ? AddEmployee(userId, emp.employee, emp.salary, emp.bankDetails)
+        complete(res.mapTo[(Int,Int,Int)])
+      }
+    }~
     get {
       log.debug(s"Got Request to get all Employees")
       complete(

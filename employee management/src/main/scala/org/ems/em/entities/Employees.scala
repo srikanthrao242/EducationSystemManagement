@@ -39,7 +39,7 @@ case class Employee(
 )
 
 case class Salary(id: Option[Int],
-                  employeeId: Int,
+                  employeeId: Option[Int],
                   salaryPerHour: Double,
                   salaryPerMon: Double,
                   allowance: Double,
@@ -53,7 +53,7 @@ case class Salary(id: Option[Int],
                   comments: String)
 
 case class BankDetails(id: Option[Int],
-                       employeeId: Int,
+                       employeeId: Option[Int],
                        bankName: String,
                        branchCode: String,
                        accNo: String)

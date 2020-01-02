@@ -1,13 +1,14 @@
 /**/
 package org.ems.em
 
-import akka.actor.Actor
+import akka.actor._
 import akka.event.slf4j.SLF4JLogging
 import org.ems.em.entities._
 import org.ems.em.service._
 import akka.pattern.pipe
 import org.ems.em.config.EmployeeConfig
-
+import akka.actor.SupervisorStrategy._
+import scala.concurrent.duration._
 class EmployeeSystem
   extends Actor
   with SalaryService
@@ -16,7 +17,11 @@ class EmployeeSystem
   with SLF4JLogging {
 
   implicit val ec = context.system.dispatcher
-
+  val retries = 5
+  override val supervisorStrategy: OneForOneStrategy =
+    OneForOneStrategy(maxNrOfRetries = retries, withinTimeRange = 1 minute) {
+      case _: Exception                => Escalate
+    }
 
   // format: off
   override def receive: Receive = {
