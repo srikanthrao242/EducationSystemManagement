@@ -19,4 +19,6 @@ case class UpdateBankDetails(userId: Int, bankDetails: BankDetails)
 case class DeleteBankDetails(userId: Int, id: Int)
 case class AddEmployeeBankDetails(userId: Int, bankDetails: BankDetails)
 
+case class AddEmployee(userId: Int, employee:Employee, salary: Salary, bankDetails: BankDetails)
+
 object RequestEntities {}
