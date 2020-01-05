@@ -24,30 +24,30 @@ class InsertEmployee(ref: ActorRef)
       case _: Exception => Escalate
     }
 
-  case class AddSalBank(id: Int, sal: Salary, bank: BankDetails)
-  case class AddBank(id: Int, salId: Int, bank: BankDetails)
+  case class AddSalBank(receiver:ActorRef, id: Int, sal: Salary, bank: BankDetails)
+  case class AddBank(receiver: ActorRef, id: Int, salId: Int, bank: BankDetails)
 
   override def receive: Receive = {
-    case AddEmployee(userId, emp, sal, bank) =>
+    case (receiver: ActorRef, AddEmployee(userId, emp, sal, bank)) =>
       addEmployeeProfile(getDB(userId), emp).unsafeToFuture().map { eid =>
-        self ! AddSalBank(userId,
+        self ! AddSalBank(receiver,userId,
                           sal.copy(employeeId = Some(eid)),
                           bank.copy(employeeId = Some(eid)))
       }
-    case AddSalBank(userId, sal, bank) =>
+    case AddSalBank(receiver, userId, sal, bank) =>
       addSalary(getDB(userId), sal).unsafeToFuture() andThen {
         case Success(id) =>
-          self ! AddBank(userId, id, bank)
+          self ! AddBank(receiver, userId, id, bank)
         case Failure(ex) =>
           for {
             _ <- deleteEmployeeProfile(getDB(userId), sal.employeeId.get)
               .unsafeToFuture()
           } yield { throw ex}
       }
-    case AddBank(userId, salId, bank) =>
+    case AddBank(receiver, userId, salId, bank) =>
       addEmployeeBankDetails(getDB(userId), bank).unsafeToFuture() andThen {
         case Success(id) =>
-          ref ! MessageBack(bank.employeeId.get, salId, id)
+          receiver ! MessageBack(bank.employeeId.get, salId, id)
         case Failure(ex) =>
           for {
             _ <- deleteEmployeeProfile(getDB(userId), bank.employeeId.get)

@@ -35,7 +35,7 @@ trait EmployeeService {
     DbModule.transactor.use { xa =>
       employee.id
         .fold(throw new Exception("Employee Id is mandatory to update"))(id => {
-          update(db,id, employee.copy(id = None)).transact(xa)
+          update(db,id, employee).transact(xa)
         })
     }
 

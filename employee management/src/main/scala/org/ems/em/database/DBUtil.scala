@@ -20,6 +20,8 @@ object DBUtil {
 
     def find(db:String,k: Key): ConnectionIO[Option[A]]
 
+    def findBy(db:String,k: Int, column:String): ConnectionIO[Option[A]]
+
     def findAll(db:String): Stream[ConnectionIO, A]
 
     def update(db:String,k: Key, a: A): ConnectionIO[Int]
@@ -63,6 +65,14 @@ object DBUtil {
                 SELECT ${cols.mkString(", ")}
                 FROM $db.$table
                 WHERE $keyCol = ?
+              """).option(key)
+
+            def findBy(db:String,key: Int, column:String): ConnectionIO[Option[A]] =
+              Query[Int, A](
+                s"""
+                SELECT ${cols.mkString(", ")}
+                FROM $db.$table
+                WHERE $column = ?
               """).option(key)
 
             def findAll(db:String): Stream[ConnectionIO, A] =

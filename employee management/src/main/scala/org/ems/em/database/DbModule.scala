@@ -26,4 +26,5 @@ object DbModule {
     )
   } yield xa
 
+  def getDB(userId: Int) : String = s"${EmployeeConfig.config.constants.db_prefix}_$userId"
 }

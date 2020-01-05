@@ -2,24 +2,28 @@
 package org.ems.services
 
 import akka.event.slf4j.SLF4JLogging
+import org.ems.cm.services.CompanyService
 import org.ems.entities.RegisterUser
+import org.ems.um.services.UserService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegisterService(userService: UserService, companyService: CompanyService)(
-  implicit ec: ExecutionContext
-) extends SLF4JLogging {
+class RegisterService(ec:ExecutionContext)
+  extends SLF4JLogging
+  with CompanyService
+  with UserService {
 
   def registerUser(registerUser: RegisterUser): Future[(Int, Int)] =
     for {
-      company <- companyService.addCompany(registerUser.company)
-      user <- userService
-        .addUser(registerUser.user.copy(`companyid` = Some(company)))
+      company <- addCompany(registerUser.company)
+      user <- addUser(registerUser.user.copy(`companyid` = Some(company)))
         .recoverWith {
           case ex: Exception =>
-            log.error(s"Got error while adding user so deleting company with id $company")
+            log.error(
+              s"Got error while adding user so deleting company with id $company"
+            )
             for {
-              v <- companyService.deleteCompany(company)
+              v <- deleteCompany(company)
             } yield v
             throw ex
         }
@@ -28,4 +32,5 @@ class RegisterService(userService: UserService, companyService: CompanyService)(
       (company, user)
     }
 
+  override implicit val executor: ExecutionContext = ec
 }

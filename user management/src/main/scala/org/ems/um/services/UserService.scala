@@ -1,35 +1,33 @@
 /**/
-package org.ems.services
+package org.ems.um.services
 
-import akka.actor.ActorRef
-import akka.util.Timeout
-import org.ems.um.entities._
+import org.ems.um.database.ImportExportDao
+import org.ems.um.entities.{AddUser, Authenticate, DeleteUser, GetUser, UpdateUser, User}
 
-import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
-import akka.pattern.ask
 
-class UserService(user: ActorRef)(implicit ec: ExecutionContext) {
-  implicit val timeout = Timeout(100 seconds)
+trait UserService {
+
+  implicit val executor : ExecutionContext
 
   def getAllUsers: Future[List[User]] =
     for {
-      users <- (user ? GetAllUsers).mapTo[List[User]]
+      users <-ImportExportDao.findAllUsers().unsafeToFuture()
     } yield users
 
   def getUser(id: Int): Future[Option[User]] =
     for {
-      us <- (user ? GetUser(id)).mapTo[Option[User]]
+      us <- ImportExportDao.findUser(id).unsafeToFuture()
     } yield us
 
   def deleteUser(id: Int): Future[Int] =
     for {
-      du <- (user ? DeleteUser(id)).mapTo[Int]
+      du <- ImportExportDao.deleteUser(id).unsafeToFuture()
     } yield du
 
   def addUser(userIn: User): Future[Int] =
     for {
-      au <- (user ? AddUser(userIn)).mapTo[Int]
+      au <- ImportExportDao.insertUser(userIn).unsafeToFuture()
     } yield au
 
   def updateUser(userIn: User): Future[Int] =
@@ -37,13 +35,12 @@ class UserService(user: ActorRef)(implicit ec: ExecutionContext) {
       throw new Exception("Id is mandatory Field for update")
     } else {
       for {
-        uu <- (user ? UpdateUser(userIn)).mapTo[Int]
+        uu <- ImportExportDao.updateUser(userIn).unsafeToFuture()
       } yield uu
     }
 
   def authenticateUser(auth: Authenticate): Future[Option[User]] =
     for {
-      uu <- (user ? auth).mapTo[Option[User]]
+      uu <- ImportExportDao.checkAuthentication(auth).unsafeToFuture()
     } yield uu
-
 }

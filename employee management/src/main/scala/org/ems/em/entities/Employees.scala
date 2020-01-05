@@ -69,6 +69,11 @@ case class CreditSalary(
   dateOfCredit: Timestamp
 )
 
+
+case class EmployeePSB(employee: Employee,
+                       salary: Salary,
+                       bankDetails: BankDetails)
+
 object EmployeesSer {
 
   implicit def enumFormat[T <: Enumeration](
@@ -101,4 +106,7 @@ object EmployeesSer {
   implicit val bankDetailsF: RootJsonFormat[BankDetails] = jsonFormat5(BankDetails)
   implicit val creditSalaryF: RootJsonFormat[CreditSalary] = jsonFormat8(CreditSalary)
 
+  implicit val addEmpPsbf = jsonFormat3(EmployeePSB)
+  implicit val messageBackf = jsonFormat3(MessageBack)
+  implicit val empSalBankRf = jsonFormat3(EmpSalBankR)
 }

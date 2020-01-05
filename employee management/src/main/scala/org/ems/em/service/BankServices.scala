@@ -29,7 +29,7 @@ trait BankServices {
       bankDetails.id.fold {
         throw new Exception(s"Need id to update bank details")
       } { id =>
-        update(db,id, bankDetails.copy(id = None)).transact(xa)
+        update(db,id, bankDetails).transact(xa)
       }
     }
 
@@ -41,5 +41,10 @@ trait BankServices {
   def deleteBankDetails(db:String,id: Int): IO[Int] = DbModule.transactor.use { xa =>
     delete(db,id).transact(xa)
   }
+
+  def getBankByEmpId(db: String, empId: Int): IO[Option[BankDetails]] =
+    DbModule.transactor.use { xa =>
+      findBy(db, empId, "employeeId").transact(xa)
+    }
 
 }
