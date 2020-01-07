@@ -3,10 +3,11 @@ import sbt._
 object Dependencies {
 
   val serviceMod = "service"
-  val companyMgtMod = "company management"
-  val userMod = "user management"
-  val employeeMod = "employee management"
-  val timeManagementMod = "Time management"
+  val companyMgtMod = "company_management"
+  val userMod = "user_management"
+  val employeeMod = "employee_management"
+  val timeManagementMod = "time_management"
+  val ems_entitiesMod = "ems_entities"
 
   val akka = "2.6.1"
   val akka_http = "10.1.11"

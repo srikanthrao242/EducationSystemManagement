@@ -2,8 +2,9 @@
 /target/
 /project/project/
 /project/target/
-/company management/target/
-/user management/target/
-/employee management/target/
+/company_management/target/
+/user_management/target/
+/employee_management/target/
 /service/target/
-/Time management/target/
+/time_management/target/
+/ems.log
