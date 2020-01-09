@@ -44,4 +44,9 @@ trait CompanyService  {
     }yield d
   }
 
+  def getCompanyProImage(id: Int): Future[Option[String]] =
+    for{
+      v <- ImportExportDao.getCompanyImage(id).unsafeToFuture()
+    }yield v
+
 }

@@ -1,16 +1,19 @@
 /**/
 package org.ems.cm
 
+import java.io.{ByteArrayOutputStream, File}
+import java.nio.file.Paths
+
 import akka.event.slf4j.SLF4JLogging
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import org.ems.cm.entities.{Activation, Company}
-import org.ems.cm.services.CompanyService
+import org.ems.cm.services.{CompanyService, Util}
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+import akka.http.scaladsl.model.{HttpEntity, HttpResponse}
+import akka.stream.scaladsl.FileIO
 import org.ems.cm.entities.CompanySer._
 import spray.json.DefaultJsonProtocol._
-
-import scala.concurrent.Future
 
 trait CompanyRoutes extends SLF4JLogging with CompanyService {
 
@@ -53,7 +56,19 @@ trait CompanyRoutes extends SLF4JLogging with CompanyService {
           complete(deleteCompany(id).map(v => v.toString))
         }
       )
+    } ~ pathPrefix("companies" / "image" / IntNumber) { id =>
+      get {
+        log.debug(s"Got request to get image ")
+        complete(getCompanyProImage(id).map {
+          case Some(file) =>
+            val path = System
+              .getProperty("user.dir") + s"/Images/companylogos/$file"
+            val imageStream = FileIO.fromPath(Paths.get(path))
+            val entity = HttpEntity( Util.contentType(path), imageStream)
+            log.debug("About to return stream...")
+            HttpResponse(entity = entity)
+        })
+      }
     }
   }
-
 }

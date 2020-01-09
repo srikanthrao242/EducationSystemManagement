@@ -95,4 +95,12 @@ object ImportExportDao extends SLF4JLogging {
       Update(query).run().transact(xa)
     }
   }
+
+  def getCompanyImage(id: Int): IO[Option[String]] = DbModule.transactor.use { xa =>
+    Query[Int, String](s"""
+                SELECT companylogo
+                FROM companies
+                WHERE id = ?
+              """).option(id).transact(xa)
+  }
 }

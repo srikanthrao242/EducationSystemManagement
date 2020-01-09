@@ -1,16 +1,27 @@
 /**/
 package org.ems.um
 
+import java.nio.file.Paths
+
 import akka.event.slf4j.SLF4JLogging
-import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.Directives.{path, _}
 import akka.http.scaladsl.server.Route
 import org.ems.um.entities.{Activation, Authenticate, User}
 import org.ems.um.services.UserService
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+import akka.http.scaladsl.model.{ContentType, ContentTypes, HttpEntity, HttpResponse, MediaTypes}
+import akka.stream.scaladsl.FileIO
 import org.ems.um.entities.UserSer._
 import spray.json.DefaultJsonProtocol._
 
 trait UserRoutes extends SLF4JLogging with UserService {
+
+  def contentTypeForUser(fileName: String): ContentType =
+    (fileName.split("\\.").last) match {
+      case "jpg"  => ContentType(MediaTypes.`image/jpeg`)
+      case "png"  => ContentType(MediaTypes.`image/png`)
+      case "html" => ContentTypes.`text/html(UTF-8)`
+    }
 
   val userRoute: Route = {
     pathPrefix("users" / IntNumber) { id =>
@@ -21,7 +32,20 @@ trait UserRoutes extends SLF4JLogging with UserService {
             complete(activation(id, act).map(_.toString))
           }
         }
-      } ~
+      } ~ concat(path("user" / "image") {
+        get {
+          log.debug(s"Got request to get image ")
+          complete(getUser(id).map {
+            case Some(user) =>
+              val path = System
+                .getProperty("user.dir") + s"/Images/employeeimages/${user.`profileimg`.getOrElse("user.png")}"
+              val imageStream = FileIO.fromPath(Paths.get(path))
+              val entity = HttpEntity(contentTypeForUser(path), imageStream)
+              log.debug("About to return stream...")
+              HttpResponse(entity = entity)
+          })
+        }
+      }) ~
       concat(
         get {
           log.debug(s"Got get request for id $id")

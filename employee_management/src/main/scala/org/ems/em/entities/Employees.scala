@@ -36,7 +36,8 @@ case class Employee(
   designation: String,
   employeeType: String,
   qualification: String,
-  isActive:Boolean
+  isActive:Boolean,
+  employeeProfile:Option[String]
 )
 
 case class Salary(id: Option[Int],
@@ -102,7 +103,7 @@ object EmployeesSer {
 
   implicit val monthsF: RootJsonFormat[entities.Months.Value] = enumFormat(Months)
   implicit val employeeTypeF: RootJsonFormat[entities.EmployeeType.Value] = enumFormat(EmployeeType)
-  implicit val employeeF: RootJsonFormat[Employee] = jsonFormat16(Employee)
+  implicit val employeeF: RootJsonFormat[Employee] = jsonFormat17(Employee)
   implicit val salaryF: RootJsonFormat[Salary] = jsonFormat13(Salary)
   implicit val bankDetailsF: RootJsonFormat[BankDetails] = jsonFormat5(BankDetails)
   implicit val creditSalaryF: RootJsonFormat[CreditSalary] = jsonFormat8(CreditSalary)

@@ -10,31 +10,26 @@ import doobie.util.update
 import org.ems.um.config.UserConfig
 import org.ems.um.entities._
 
-class UserSchema extends Actor with SLF4JLogging {
-  import context.dispatcher
-  override def receive: Receive = {
-    case CreateSchema(userId) =>
-      log.debug(s"Got message to createschema $userId")
-      val schemaName = s"${UserConfig.config.constants.db_prefix}_$userId"
-      for {
-        _ <- createDb(userId).unsafeToFuture()
-      } yield {
-        log.info(s"create schema is done with $schemaName")
-        self ! CreateEmployee(schemaName)
-      }
+import scala.concurrent.{ExecutionContext, Future}
 
-    case CreateEmployee(schema) =>
-      log.info(s"Got message to create Employee table in $schema")
-      for {
-        _ <- createEmployeeTable(schema).unsafeToFuture()
-        _ <- createSalary(schema).unsafeToFuture()
-        _ <- createBankDetails(schema).unsafeToFuture()
-        _ <- createCreditDetails(schema).unsafeToFuture()
-        _ <- createTimeSheet(schema).unsafeToFuture()
-        _ <- createHolidays(schema).unsafeToFuture()
-      } yield {
-        log.debug(s"successfully created employee table")
-      }
+trait UserSchema extends SLF4JLogging {
+  implicit val executor : ExecutionContext
+
+  def createSchema(userId:Int): Future[Int] ={
+    log.debug(s"Got message to createschema $userId")
+    val schema = s"${UserConfig.config.constants.db_prefix}_$userId"
+    for {
+      _ <- createDb(userId).unsafeToFuture()
+      eid <- createEmployeeTable(schema).unsafeToFuture()
+      _ <- createSalary(schema).unsafeToFuture()
+      _ <- createBankDetails(schema).unsafeToFuture()
+      _ <- createCreditDetails(schema).unsafeToFuture()
+      _ <- createTimeSheet(schema).unsafeToFuture()
+      _ <- createHolidays(schema).unsafeToFuture()
+    } yield {
+      log.debug(s"successfully created employee table")
+      eid
+    }
   }
 
   def createDb(userId: Int): IO[Int] = {
@@ -67,6 +62,8 @@ class UserSchema extends Actor with SLF4JLogging {
          |  `designation` VARCHAR(45) NULL,
          |  `employeeType` VARCHAR(45) NULL,
          |  `qualification` VARCHAR(45) NULL,
+         |  `isActive` TINYINT NULL DEFAULT '1',
+         |  `employeeProfile` VARCHAR(100) DEFAULT 'user.png' ,
          |  PRIMARY KEY (`id`),
          |  INDEX `emp_comp_key_idx` (`companyId` ASC) VISIBLE,
          |  CONSTRAINT `emp_comp_key`
@@ -168,7 +165,7 @@ class UserSchema extends Actor with SLF4JLogging {
   def createTimeSheet(schema: String): IO[Int] = {
     val query =
       s"""
-         |CREATE TABLE `$schema`.`time_sheet` (
+         |CREATE TABLE IF NOT EXISTS `$schema`.`time_sheet` (
          |  `id` INT NOT NULL AUTO_INCREMENT,
          |  `employeeId` INT NULL,
          |  `date` DATETIME NULL,
@@ -193,7 +190,7 @@ class UserSchema extends Actor with SLF4JLogging {
   def createHolidays(schema: String): IO[Int] = {
     val query =
       s"""
-         |CREATE TABLE `$schema`.`holidays` (
+         |CREATE TABLE IF NOT EXISTS `$schema`.`holidays` (
          |  `id` INT NOT NULL AUTO_INCREMENT,
          |  `holidayType` VARCHAR(45) NULL,
          |  `date` DATETIME NULL,

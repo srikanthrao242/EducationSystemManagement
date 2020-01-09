@@ -10,6 +10,8 @@ import doobie._
 import doobie.implicits._
 import org.ems.em.database.DBUtil.Dao.Aux
 
+import scala.concurrent.Future
+
 trait EmployeeService {
   implicit val empDao: Dao.Aux[Employee, Int] =
     Dao.derive[Employee, Int]("employees", "id")
@@ -17,30 +19,40 @@ trait EmployeeService {
   val empDn: Aux[Employee, Int] = Dao[Employee]
   import empDn._
 
-  def getAllEmployeesProfiles(db:String): IO[List[Employee]] = DbModule.transactor.use {
-    xa =>
-      findAll(db).transact(xa).compile.toList
-  }
-
-  def getEmployeeProfile(db:String, id: Int): IO[Option[Employee]] =
+  def getAllEmployeesProfiles(db: String): IO[List[Employee]] =
     DbModule.transactor.use { xa =>
-      find(db,id).transact(xa)
+      findAll(db).transact(xa).compile.toList
     }
 
-  def deleteEmployeeProfile(db:String, id: Int): IO[Int] = DbModule.transactor.use { xa =>
-    delete(db,id).transact(xa)
-  }
+  def getEmployeeProfile(db: String, id: Int): IO[Option[Employee]] =
+    DbModule.transactor.use { xa =>
+      find(db, id).transact(xa)
+    }
 
-  def updateEmployeeProfile(db:String, employee: Employee): IO[Int] =
+  def deleteEmployeeProfile(db: String, id: Int): IO[Int] =
+    DbModule.transactor.use { xa =>
+      delete(db, id).transact(xa)
+    }
+
+  def updateEmployeeProfile(db: String, employee: Employee): IO[Int] =
     DbModule.transactor.use { xa =>
       employee.id
         .fold(throw new Exception("Employee Id is mandatory to update"))(id => {
-          update(db,id, employee).transact(xa)
+          update(db, id, employee).transact(xa)
         })
     }
 
-  def addEmployeeProfile(db:String, employee: Employee): IO[Int] = DbModule.transactor.use { xa =>
-    insert(db,employee).transact(xa)
-  }
+  def addEmployeeProfile(db: String, employee: Employee): IO[Int] =
+    DbModule.transactor.use { xa =>
+      insert(db, employee).transact(xa)
+    }
+
+  def getEmployeeProImage(db: String, id: Int): Future[Option[String]] = DbModule.transactor.use { xa =>
+    Query[Int, String](s"""
+                SELECT employeeProfile
+                FROM $db.employees
+                WHERE id = ?
+              """).option(id).transact(xa)
+  }.unsafeToFuture()
 
 }

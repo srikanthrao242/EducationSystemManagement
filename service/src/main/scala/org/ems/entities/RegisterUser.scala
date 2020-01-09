@@ -9,7 +9,9 @@ import spray.json._
 import DefaultJsonProtocol._
 
 case class RegisterUser (user: User, company: Company)
+case class UploadImageRes(fileName: String)
 
 object RegisterUserSer{
   implicit val registerUserF: RootJsonFormat[RegisterUser] = jsonFormat2(RegisterUser)
+  implicit val uploadImageResF: RootJsonFormat[UploadImageRes] = jsonFormat1(UploadImageRes)
 }

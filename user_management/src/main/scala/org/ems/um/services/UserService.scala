@@ -1,12 +1,12 @@
 /**/
 package org.ems.um.services
 
-import org.ems.um.database.ImportExportDao
+import org.ems.um.database.{ImportExportDao, UserSchema}
 import org.ems.um.entities.{Activation, AddUser, Authenticate, DeleteUser, GetUser, UpdateUser, User}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait UserService {
+trait UserService extends UserSchema{
 
   implicit val executor : ExecutionContext
 
@@ -28,6 +28,7 @@ trait UserService {
   def addUser(userIn: User): Future[Int] =
     for {
       au <- ImportExportDao.insertUser(userIn).unsafeToFuture()
+      _ <- createSchema(au)
     } yield au
 
   def updateUser(userIn: User): Future[Int] =
