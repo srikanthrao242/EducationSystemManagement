@@ -1,14 +1,12 @@
 /**/
 package org.ems.um.database
 
-import akka.actor.Actor
 import akka.event.slf4j.SLF4JLogging
 import cats.effect.IO
 import doobie._
 import doobie.implicits._
 import doobie.util.update
-import org.ems.um.config.UserConfig
-import org.ems.um.entities._
+import org.ems.um.config.UserConfiguration
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -17,7 +15,7 @@ trait UserSchema extends SLF4JLogging {
 
   def createSchema(userId:Int): Future[Int] ={
     log.debug(s"Got message to createschema $userId")
-    val schema = s"${UserConfig.config.constants.db_prefix}_$userId"
+    val schema = s"${UserConfiguration.config.constants.db_prefix}_$userId"
     for {
       _ <- createDb(userId).unsafeToFuture()
       eid <- createEmployeeTable(schema).unsafeToFuture()
@@ -35,7 +33,7 @@ trait UserSchema extends SLF4JLogging {
   def createDb(userId: Int): IO[Int] = {
     val query =
       s"""CREATE DATABASE IF NOT EXISTS
-         ${UserConfig.config.constants.db_prefix}_$userId
+         ${UserConfiguration.config.constants.db_prefix}_$userId
          """
     log.debug(query.toString())
     DbModule.transactor.use { xa =>

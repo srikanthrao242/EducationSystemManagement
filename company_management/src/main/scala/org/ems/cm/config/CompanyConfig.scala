@@ -4,17 +4,9 @@ package org.ems.cm.config
 import pureconfig.generic.ProductHint
 import pureconfig.{CamelCase, ConfigFieldMapping, ConfigSource}
 import pureconfig.generic.auto._
+import com.ems.utilities.companies.config._
 
-case class DBConfig(url: String,
-                    driver: String,
-                    username: String,
-                    password: String,
-                    connectTimeout: String,
-                    poolSize: Int)
-case class CompConfig(db:DBConfig)
-case class CompanyConfig(`education-management-system`:CompConfig)
-
-object CompanyConfig {
+object CompanyConfiguration {
   implicit def productHint[T]: ProductHint[T] =
     ProductHint(ConfigFieldMapping(CamelCase, CamelCase))
   val config = ConfigSource.default.load[CompanyConfig] match {

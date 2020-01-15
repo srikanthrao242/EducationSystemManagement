@@ -2,12 +2,12 @@
 package org.ems.em.service
 import cats.Show
 import cats.effect.IO
+import com.ems.utilities.database.DBUtil.Dao._
+import com.ems.utilities.database.DBUtil._
+import com.ems.utilities.employees.entities.BankDetails
 import org.ems.em.database.DbModule
-import org.ems.em.entities._
 import doobie._
 import doobie.implicits._
-import org.ems.em.database.DBUtil.Dao
-import org.ems.em.database.DBUtil.Dao.Aux
 trait BankServices {
   implicit val bankDao: Dao.Aux[BankDetails, Int] =
     Dao.derive[BankDetails, Int]("bank_details", "id")
@@ -21,7 +21,7 @@ trait BankServices {
 
   def getEmployeeBankDetails(db:String,id: Int): IO[Option[BankDetails]] =
     DbModule.transactor.use { xa =>
-      find(db,id).transact(xa)
+      find(id,db).transact(xa)
     }
 
   def updateBankDetails(db:String,bankDetails: BankDetails): IO[Int] =
@@ -29,22 +29,22 @@ trait BankServices {
       bankDetails.id.fold {
         throw new Exception(s"Need id to update bank details")
       } { id =>
-        update(db,id, bankDetails).transact(xa)
+        update(id, bankDetails,db).transact(xa)
       }
     }
 
   def addEmployeeBankDetails(db:String,bankDetails: BankDetails): IO[Int] =
     DbModule.transactor.use { xa =>
-      insert(db,bankDetails).transact(xa)
+      insert(bankDetails,db).transact(xa)
     }
 
   def deleteBankDetails(db:String,id: Int): IO[Int] = DbModule.transactor.use { xa =>
-    delete(db,id).transact(xa)
+    delete(id,db).transact(xa)
   }
 
   def getBankByEmpId(db: String, empId: Int): IO[Option[BankDetails]] =
     DbModule.transactor.use { xa =>
-      findBy(db, empId, "employeeId").transact(xa)
+      findBy(empId, "employeeId",db).transact(xa)
     }
 
 }

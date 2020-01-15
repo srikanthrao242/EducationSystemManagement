@@ -3,7 +3,7 @@ package org.ems.em.service
 
 import akka.actor.{Actor, Props}
 import akka.event.slf4j.SLF4JLogging
-import org.ems.em.entities.AddEmployee
+import com.ems.utilities.employees.entities.AddEmployee
 
 class AddEmployeeActor extends Actor with SLF4JLogging{
 

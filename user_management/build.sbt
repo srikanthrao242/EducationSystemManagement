@@ -10,11 +10,15 @@ lazy val baseSettings = Seq(
   organization := "com.ems",
   scalaVersion := "2.13.1"
 )
+resolvers += Resolver.url(
+  "bintray-com.ems-ems_utilities",
+  url("https://dl.bintray.com/srikanthrao242/ems_utilities"))(
+  Resolver.ivyStylePatterns)
 
 lazy val user =
   project
     .in(file("."))
     .settings(name := _name)
     .settings(
-      libraryDependencies ++= (akkaDep ++ loggingDep ++ pureConfigDep ++ doobieDep)
+      libraryDependencies ++= (akkaDep ++ loggingDep ++ pureConfigDep ++ doobieDep ++ emsUtils)
     )

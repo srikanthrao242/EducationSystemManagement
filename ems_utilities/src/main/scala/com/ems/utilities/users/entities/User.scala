@@ -1,5 +1,5 @@
 /**/
-package org.ems.um.entities
+package com.ems.utilities.users.entities
 
 import java.sql.Timestamp
 

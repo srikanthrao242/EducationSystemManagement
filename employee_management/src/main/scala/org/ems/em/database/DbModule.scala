@@ -2,13 +2,14 @@
 package org.ems.em.database
 
 import cats.effect._
+import com.ems.utilities.employees.config.{DBConfig, EmployeeConfig}
 import doobie.hikari.HikariTransactor
 import doobie.util.ExecutionContexts
-import org.ems.em.config.{DBConfig, EmployeeConfig}
+import org.ems.em.config.EmployeeConfiguration
 
 object DbModule {
 
-  val db : DBConfig = EmployeeConfig.config.db
+  val db : DBConfig = EmployeeConfiguration.config.db
   implicit val cs: ContextShift[IO] =
     IO.contextShift(ExecutionContexts.synchronous)
 
@@ -26,5 +27,5 @@ object DbModule {
     )
   } yield xa
 
-  def getDB(userId: Int) : String = s"${EmployeeConfig.config.constants.db_prefix}_$userId"
+  def getDB(userId: Int) : String = s"${EmployeeConfiguration.config.constants.db_prefix}_$userId"
 }

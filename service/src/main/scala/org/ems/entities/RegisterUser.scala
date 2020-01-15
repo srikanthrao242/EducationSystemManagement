@@ -1,12 +1,12 @@
 /**/
 package org.ems.entities
 
-import org.ems.cm.entities.Company
-import org.ems.um.entities.User
-import org.ems.um.entities.UserSer._
-import org.ems.cm.entities.CompanySer._
+import com.ems.utilities.companies.entities.Company
+import com.ems.utilities.companies.entities.CompanySer._
 import spray.json._
 import DefaultJsonProtocol._
+import com.ems.utilities.users.entities.User
+import com.ems.utilities.users.entities.UserSer._
 
 case class RegisterUser (user: User, company: Company)
 case class UploadImageRes(fileName: String)

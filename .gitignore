@@ -8,3 +8,9 @@
 /service/target/
 /time_management/target/
 /ems.log
+/ems_utilities/.idea/
+/ems_utilities/target/
+/ems_utilities/ems_utilities/
+/ems_utilities/project/target/
+/ems_utilities/project/project/
+/ems_utilities/ems_utilities.iml

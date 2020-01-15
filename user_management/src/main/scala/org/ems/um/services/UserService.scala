@@ -1,8 +1,8 @@
 /**/
 package org.ems.um.services
 
+import com.ems.utilities.users.entities._
 import org.ems.um.database.{ImportExportDao, UserSchema}
-import org.ems.um.entities.{Activation, AddUser, Authenticate, DeleteUser, GetUser, UpdateUser, User}
 
 import scala.concurrent.{ExecutionContext, Future}
 

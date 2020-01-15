@@ -1,11 +1,10 @@
 /**/
-package org.ems.em.entities
+package com.ems.utilities.employees.entities
 
 import java.sql.Timestamp
 
 import spray.json._
 import DefaultJsonProtocol._
-import org.ems.em.entities
 
 object Months extends Enumeration {
   type Months = Value
@@ -101,8 +100,8 @@ object EmployeesSer {
     }
   }
 
-  implicit val monthsF: RootJsonFormat[entities.Months.Value] = enumFormat(Months)
-  implicit val employeeTypeF: RootJsonFormat[entities.EmployeeType.Value] = enumFormat(EmployeeType)
+  implicit val monthsF: RootJsonFormat[Months.Value] = enumFormat(Months)
+  implicit val employeeTypeF: RootJsonFormat[EmployeeType.Value] = enumFormat(EmployeeType)
   implicit val employeeF: RootJsonFormat[Employee] = jsonFormat17(Employee)
   implicit val salaryF: RootJsonFormat[Salary] = jsonFormat13(Salary)
   implicit val bankDetailsF: RootJsonFormat[BankDetails] = jsonFormat5(BankDetails)

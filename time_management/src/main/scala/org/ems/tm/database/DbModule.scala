@@ -2,13 +2,14 @@
 package org.ems.tm.database
 
 import cats.effect._
+import com.ems.utilities.time_mgt.config.DBConfig
 import doobie.hikari.HikariTransactor
 import doobie.util.ExecutionContexts
-import org.ems.tm.config.{DBConfig, TimeConfig}
+import org.ems.tm.config.TimeConfiguration
 
 object DbModule {
 
-  val db : DBConfig = TimeConfig.config.db
+  val db : DBConfig = TimeConfiguration.config.db
   implicit val cs: ContextShift[IO] =
     IO.contextShift(ExecutionContexts.synchronous)
 

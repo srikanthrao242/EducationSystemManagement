@@ -2,11 +2,12 @@
 package org.ems.tm.services
 import cats.Show
 import cats.effect.IO
+import com.ems.utilities.database.DBUtil.Dao
+import com.ems.utilities.database.DBUtil.Dao._
+import com.ems.utilities.time_mgt.etities.TimeSheet
 import doobie._
 import doobie.implicits._
-import org.ems.tm.database.DBUtil.Dao
 import org.ems.tm.database.DbModule
-import org.ems.tm.etities.TimeSheet
 
 
 trait TimeSheetService {
@@ -18,12 +19,12 @@ trait TimeSheetService {
 
   def getTimeSheet(db:String, id: Int): IO[Option[TimeSheet]] = DbModule.transactor.use {
     xa =>
-      find(db,id).transact(xa)
+      find(id,db).transact(xa)
   }
 
   def addTimeSheet(db:String, timeSheet: TimeSheet): IO[Int] = DbModule.transactor.use {
     xa =>
-      insert(db,timeSheet).transact(xa)
+      insert(timeSheet,db).transact(xa)
   }
 
   def updateTimeSheet(db:String, timeSheet: TimeSheet): IO[Int] = DbModule.transactor.use {
@@ -31,7 +32,7 @@ trait TimeSheetService {
       timeSheet.id.fold {
         throw new Exception(s"new timesheet id to update")
       } { id =>
-        update(db,id, timeSheet.copy(id = None)).transact(xa)
+        update(id, timeSheet.copy(id = None),db).transact(xa)
       }
 
   }

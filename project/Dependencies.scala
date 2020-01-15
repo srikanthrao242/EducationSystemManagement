@@ -1,4 +1,5 @@
 /**/
+import sbt.Keys.resolvers
 import sbt._
 object Dependencies {
 
@@ -19,6 +20,7 @@ object Dependencies {
   val scalaz_ver = "7.2.29"
   val doobie_ver = "0.8.6"
   val mysql = "8.0.15"
+  val ems_utilities = "0.0.2"
 
   val akkaDep = Seq(
     "com.typesafe.akka" %% "akka-actor"           % akka,
@@ -49,6 +51,9 @@ object Dependencies {
     "mysql"        % "mysql-connector-java" % mysql,
     "org.tpolecat" %% "doobie-core"         % doobie_ver,
     "org.tpolecat" %% "doobie-hikari"       % doobie_ver
+  )
+  val emsUtils = Seq(
+    "com.ems" %% "ems_utilities" % ems_utilities
   )
 
 }

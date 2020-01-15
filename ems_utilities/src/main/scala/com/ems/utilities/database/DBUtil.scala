@@ -1,13 +1,12 @@
 /**/
-package org.ems.em.database
-
+package com.ems.utilities.database
 
 import cats.implicits._
 import doobie._
 import fs2.Stream
 import shapeless._
-import shapeless.ops.record._
 import shapeless.ops.hlist._
+import shapeless.ops.record._
 
 object DBUtil {
 
@@ -16,17 +15,18 @@ object DBUtil {
   trait Dao[A] {
     type Key
 
-    def insert(db:String, a: A): ConnectionIO[Key]
+    def insert(a: A, db:String = ""): ConnectionIO[Key]
 
-    def find(db:String,k: Key): ConnectionIO[Option[A]]
+    def find(k: Key ,db:String = ""): ConnectionIO[Option[A]]
 
-    def findBy(db:String,k: Int, column:String): ConnectionIO[Option[A]]
+    def findAll(db:String = ""): Stream[ConnectionIO, A]
 
-    def findAll(db:String): Stream[ConnectionIO, A]
+    def findBy(k: Int, column:String,db:String=""): ConnectionIO[Option[A]]
 
-    def update(db:String,k: Key, a: A): ConnectionIO[Int]
+    def update(k: Key, a: A ,db:String = ""): ConnectionIO[Int]
 
-    def delete(db:String,k: Key): ConnectionIO[Int]
+    def delete(k: Key,db:String = ""): ConnectionIO[Int]
+
   }
 
   object Dao {
@@ -34,6 +34,12 @@ object DBUtil {
     type Aux[A, K] = Dao[A] {type Key = K}
 
     def apply[A](implicit ev: Dao[A]): Aux[A, ev.Key] = ev
+
+    def concatDot(db:String): String =
+      if(db.nonEmpty)
+        db.concat(".")
+      else
+        db
 
     object derive {
       def apply[A, K] = new Partial[A, K]
@@ -52,48 +58,48 @@ object DBUtil {
             void(ev)
             type Key = K
             val cols = ks.apply.toList.map(_.name)
-            def insert(db:String,a: A): ConnectionIO[Key] =
+            def insert(a: A, db:String = ""): ConnectionIO[Key] =
               Update[A](
                 s"""
-                INSERT INTO $db.$table (${cols.mkString(", ")})
+                INSERT INTO ${concatDot(db)}$table (${cols.mkString(", ")})
                 VALUES (${cols.as("?").mkString(", ")})
               """).withUniqueGeneratedKeys[Key](keyCol)(a)
 
-            def find(db:String,key: Key): ConnectionIO[Option[A]] =
+            def find(key: Key, db:String = ""): ConnectionIO[Option[A]] =
               Query[Key, A](
                 s"""
                 SELECT ${cols.mkString(", ")}
-                FROM $db.$table
+                FROM ${concatDot(db)}$table
                 WHERE $keyCol = ?
               """).option(key)
 
-            def findBy(db:String,key: Int, column:String): ConnectionIO[Option[A]] =
-              Query[Int, A](
-                s"""
-                SELECT ${cols.mkString(", ")}
-                FROM $db.$table
-                WHERE $column = ?
-              """).option(key)
-
-            def findAll(db:String): Stream[ConnectionIO, A] =
+            def findAll(db:String = ""): Stream[ConnectionIO, A] =
               Query0[A](
                 s"""
                 SELECT ${cols.mkString(", ")}
-                FROM $db.$table
+                FROM ${concatDot(db)}$table
               """).stream
 
-            def update(db:String,k: Key, a: A): ConnectionIO[Int] =
+            def findBy(key: Int, column:String,db:String=""): ConnectionIO[Option[A]] =
+              Query[Int, A](
+                s"""
+                SELECT ${cols.mkString(", ")}
+                FROM ${concatDot(db)}$table
+                WHERE $column = ?
+              """).option(key)
+
+            def update(k: Key, a: A, db:String = ""): ConnectionIO[Int] =
               Update[(A, Key)](
                 s"""
-                UPDATE $db.$table
+                UPDATE ${concatDot(db)}$table
                 SET ${cols.map(_ + " = ?").mkString(", ")}
                 WHERE $keyCol = ?
               """).run((a, k))
 
-            def delete(db:String,k: Key): ConnectionIO[Int] = {
+            def delete(k: Key, db:String = ""): ConnectionIO[Int] = {
               Update[Key](
                 s"""
-                DELETE FROM $db.$table
+                DELETE FROM ${concatDot(db)}$table
                 WHERE $keyCol = ?
               """).run(k)
             }

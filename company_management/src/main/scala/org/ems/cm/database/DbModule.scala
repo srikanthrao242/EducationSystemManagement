@@ -4,12 +4,12 @@ package org.ems.cm.database
 import cats.effect._
 import doobie.hikari.HikariTransactor
 import doobie.util.ExecutionContexts
-import org.ems.cm.config.{CompanyConfig, DBConfig}
-import org.ems.cm.config.CompanyConfig
+import com.ems.utilities.companies.config.{CompanyConfig, DBConfig}
+import org.ems.cm.config.CompanyConfiguration
 
 object DbModule {
 
-  val db : DBConfig = CompanyConfig.config.db
+  val db : DBConfig = CompanyConfiguration.config.db
   implicit val cs: ContextShift[IO] =
     IO.contextShift(ExecutionContexts.synchronous)
 

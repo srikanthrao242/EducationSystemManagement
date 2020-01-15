@@ -2,13 +2,14 @@
 package org.ems.um.database
 
 import cats.effect._
-import org.ems.um.config.{DBConfig, UserConfig}
+import com.ems.utilities.users.config.DBConfig
+import org.ems.um.config.UserConfiguration
 import doobie.hikari.HikariTransactor
 import doobie.util.ExecutionContexts
 
 object DbModule {
 
-  val db : DBConfig = UserConfig.config.db
+  val db : DBConfig = UserConfiguration.config.db
   implicit val cs: ContextShift[IO] =
     IO.contextShift(ExecutionContexts.synchronous)
 

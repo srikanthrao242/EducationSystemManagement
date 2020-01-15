@@ -4,8 +4,8 @@ package org.ems.em.service
 import akka.actor.SupervisorStrategy.Escalate
 import akka.actor.{Actor, ActorRef, OneForOneStrategy}
 import akka.event.slf4j.SLF4JLogging
-import org.ems.em.config.EmployeeConfig
-import org.ems.em.entities._
+import org.ems.em.config.EmployeeConfiguration
+import com.ems.utilities.employees.entities._
 
 import scala.concurrent.duration._
 import scala.util.{Failure, Success}
@@ -58,5 +58,5 @@ class InsertEmployee(ref: ActorRef)
   }
 
   def getDB(userId: Int): String =
-    s"${EmployeeConfig.config.constants.db_prefix}_$userId"
+    s"${EmployeeConfiguration.config.constants.db_prefix}_$userId"
 }

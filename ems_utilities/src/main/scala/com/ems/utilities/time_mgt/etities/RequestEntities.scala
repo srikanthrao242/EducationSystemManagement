@@ -1,6 +1,5 @@
 /**/
-package org.ems.tm.etities
-
+package com.ems.utilities.time_mgt.etities
 
 case class GetTimeSheet(userId:Int,id:Int)
 case class UpdateTimeSheet(userId:Int,timeSheet: TimeSheet)

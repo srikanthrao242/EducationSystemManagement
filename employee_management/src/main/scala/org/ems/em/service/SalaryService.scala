@@ -3,10 +3,10 @@ package org.ems.em.service
 
 import cats.Show
 import cats.effect.IO
-import org.ems.em.database.DBUtil.Dao
-import org.ems.em.database.DBUtil.Dao.Aux
+import com.ems.utilities.database.DBUtil.Dao._
+import com.ems.utilities.database.DBUtil._
 import org.ems.em.database.DbModule
-import org.ems.em.entities.Salary
+import com.ems.utilities.employees.entities.Salary
 import doobie._
 import doobie.implicits._
 
@@ -19,7 +19,7 @@ trait SalaryService {
 
   def getEmployeeSalary(db: String, id: Int): IO[Option[Salary]] =
     DbModule.transactor.use { xa =>
-      find(db, id).transact(xa)
+      find( id,db).transact(xa)
     }
   def getAllSalaries(db: String): IO[List[Salary]] = DbModule.transactor.use {
     xa =>
@@ -30,21 +30,21 @@ trait SalaryService {
       salary.id.fold {
         throw new Exception(s"Need id for salary update")
       } { id =>
-        update(db, id, salary).transact(xa)
+        update( id, salary,db).transact(xa)
       }
     }
   def deleteSalary(db: String, id: Int): IO[Int] = DbModule.transactor.use {
     xa =>
-      delete(db, id).transact(xa)
+      delete( id,db).transact(xa)
   }
   def addSalary(db: String, salary: Salary): IO[Int] = DbModule.transactor.use {
     xa =>
-      insert(db, salary).transact(xa)
+      insert( salary,db).transact(xa)
   }
 
   def getSalaryByEmpId(db: String, empId: Int): IO[Option[Salary]] =
     DbModule.transactor.use { xa =>
-      findBy(db, empId, "employeeId").transact(xa)
+      findBy( empId, "employeeId",db).transact(xa)
     }
 
 }

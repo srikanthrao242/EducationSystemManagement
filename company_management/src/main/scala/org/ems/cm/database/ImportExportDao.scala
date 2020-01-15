@@ -3,11 +3,11 @@ package org.ems.cm.database
 
 import akka.event.slf4j.SLF4JLogging
 import cats.effect._
+import com.ems.utilities.companies.entities.Company
 import doobie._
 import doobie.implicits._
-import org.ems.cm.entities.Company
 import spray.json._
-import org.ems.cm.entities.CompanySer._
+import com.ems.utilities.companies.entities.CompanySer._
 object ImportExportDao extends SLF4JLogging {
   val table = "companies"
   val keyCol = "id"

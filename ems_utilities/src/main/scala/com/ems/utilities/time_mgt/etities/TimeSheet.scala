@@ -1,5 +1,5 @@
 /**/
-package org.ems.tm.etities
+package com.ems.utilities.time_mgt.etities
 
 import java.sql.Timestamp
 import spray.json._

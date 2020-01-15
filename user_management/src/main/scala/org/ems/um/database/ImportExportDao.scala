@@ -3,13 +3,11 @@ package org.ems.um.database
 
 import akka.event.slf4j.SLF4JLogging
 import cats.effect._
+import com.ems.utilities.users.entities._
+import com.ems.utilities.users.entities.UserSer._
 import doobie._
 import doobie.implicits._
-import org.ems.um.config.UserConfig
-import org.ems.um.database.ImportExportDao.log
 import spray.json._
-import org.ems.um.entities.{Authenticate, User}
-import org.ems.um.entities.UserSer._
 object ImportExportDao extends SLF4JLogging {
   val table = "user"
   val keyCol = "id"

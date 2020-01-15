@@ -1,8 +1,8 @@
 /**/
 package org.ems.cm.services
 
+import com.ems.utilities.companies.entities._
 import org.ems.cm.database.ImportExportDao
-import org.ems.cm.entities._
 
 import scala.concurrent.{ExecutionContext, Future}
 

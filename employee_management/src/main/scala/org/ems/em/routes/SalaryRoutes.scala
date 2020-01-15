@@ -4,9 +4,9 @@ package org.ems.em.routes
 import akka.event.slf4j.SLF4JLogging
 import akka.http.scaladsl.server.Directives._
 import org.ems.em.database.DbModule
-import org.ems.em.entities._
+import com.ems.utilities.employees.entities._
 import org.ems.em.service.SalaryService
-import org.ems.em.entities.EmployeesSer._
+import com.ems.utilities.employees.entities.EmployeesSer._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.server.Route
 import spray.json.DefaultJsonProtocol._
