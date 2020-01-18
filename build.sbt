@@ -16,6 +16,7 @@ lazy val companyMgt = project.in(file(companyMgtMod))
 lazy val user = project.in(file(userMod))
 lazy val employee = project.in(file(employeeMod))
 lazy val timeMgt = project.in(file(timeManagementMod))
+lazy val studentMgt = project.in(file(studentMod))
 
 val rootDependencies =
   akkaDep ++
@@ -27,6 +28,6 @@ val rootDependencies =
 
 lazy val service = (project in file(serviceMod))
   .settings(name := _name)
-  .aggregate(companyMgt, user, employee, timeMgt)
-  .dependsOn(companyMgt, user, employee, timeMgt)
+  .aggregate(companyMgt, user, employee, timeMgt, studentMgt)
+  .dependsOn(companyMgt, user, employee, timeMgt, studentMgt)
   .settings(libraryDependencies ++= rootDependencies)

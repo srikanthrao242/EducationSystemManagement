@@ -11,9 +11,9 @@ import org.ems.um.config.UserConfiguration
 import scala.concurrent.{ExecutionContext, Future}
 
 trait UserSchema extends SLF4JLogging {
-  implicit val executor : ExecutionContext
+  implicit val executor: ExecutionContext
 
-  def createSchema(userId:Int): Future[Int] ={
+  def createSchema(userId: Int): Future[Int] = {
     log.debug(s"Got message to createschema $userId")
     val schema = s"${UserConfiguration.config.constants.db_prefix}_$userId"
     for {
@@ -196,6 +196,33 @@ trait UserSchema extends SLF4JLogging {
          |""".stripMargin
 
     log.debug(query.toString())
+    DbModule.transactor.use { xa =>
+      Update(query).run().transact(xa)
+    }
+  }
+
+  def createAcademic(schema: String): IO[Int] = {
+    val query =
+      s"""
+         |  CREATE TABLE `$schema`.`academic` (
+         |  `AcademicID` INT NOT NULL AUTO_INCREMENT,
+         |  `AcademicName` VARCHAR(45) NULL,
+         |  `StartDate` TIMESTAMP NULL,
+         |  `EndYear` YEAR NULL,
+         |  `EndDate` TIMESTAMP NULL,
+         |  `UserID` INT NULL,
+         |  `IsActive` TINYINT NULL,
+         |  `IsCurrentAcademic` TINYINT NULL,
+         |  PRIMARY KEY (`AcademicID`),
+         |  UNIQUE INDEX `AcademicName_UNIQUE` (`AcademicName` ASC) VISIBLE,
+         |  INDEX `academic_user_idx` (`UserID` ASC) VISIBLE,
+         |  CONSTRAINT `academic_user`
+         |    FOREIGN KEY (`UserID`)
+         |    REFERENCES `educationmanagementsystem`.`user` (`id`)
+         |    ON DELETE NO ACTION
+         |    ON UPDATE NO ACTION);
+         |""".stripMargin
+    log.debug(query.toString)
     DbModule.transactor.use { xa =>
       Update(query).run().transact(xa)
     }

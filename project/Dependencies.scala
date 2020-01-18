@@ -1,5 +1,4 @@
 /**/
-import sbt.Keys.resolvers
 import sbt._
 object Dependencies {
 
@@ -8,7 +7,7 @@ object Dependencies {
   val userMod = "user_management"
   val employeeMod = "employee_management"
   val timeManagementMod = "time_management"
-  val ems_entitiesMod = "ems_entities"
+  val studentMod = "student_management"
 
   val akka = "2.6.1"
   val akka_http = "10.1.11"

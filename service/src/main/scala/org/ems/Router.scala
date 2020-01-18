@@ -16,6 +16,7 @@ import org.ems.util.{CORSHandler, Util}
 import org.ems.util.ExceptionHandling._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import scala.util.{Failure, Success}
+import com.ems.student.academic.AcademicsRoute
 trait Router
   extends RouteConcatenation
   with CompanyRoutes
@@ -24,6 +25,7 @@ trait Router
   with EmployeeRoutes
   with SalaryRoutes
   with BankRoutes
+  with AcademicsRoute
   with CORSHandler {
   this: AkkaCoreModule =>
   val client = ESMConfig.config.client
@@ -47,7 +49,13 @@ trait Router
                 uploadFile("employeeimages")
               }
             } ~
-            companyRoute ~ registerRoute ~ userRoute ~ employeesRoute ~ salaryRoute ~ bankRoute
+            companyRoute ~
+            registerRoute ~
+            userRoute ~
+            employeesRoute ~
+            salaryRoute ~
+            bankRoute ~
+            academicRoute
           }
         }
       }
