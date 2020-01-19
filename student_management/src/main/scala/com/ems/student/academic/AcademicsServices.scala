@@ -17,19 +17,27 @@ trait AcademicsServices {
   val academicDn: Aux[Academic, Int] = Dao[Academic]
   import academicDn._
 
-  def addNew(db:String,academic: Academic): Future[Int] ={
-    DbModule.transactor.use{xa=>
-      insert(academic,db).transact(xa)
+  def addNew(db: String, academic: Academic): Future[Int] =
+    DbModule.transactor.use { xa =>
+      insert(academic, db).transact(xa)
     }.unsafeToFuture()
-  }
 
-  def findAllAcademics(db:String): Future[List[Academic]] ={
-    DbModule.transactor.use{xa=>
+  def findAllAcademics(db: String): Future[List[Academic]] =
+    DbModule.transactor.use { xa =>
       findAll(db).transact(xa).compile.toList
     }.unsafeToFuture()
+
+  def findAllAcademicNames(db: String): Future[List[String]] = {
+    val query =
+      s"""
+         |SELECT AcademicName FROM $db.academic_details
+         |""".stripMargin
+    DbModule.transactor.use { xa =>
+      Query0[String](query).stream.transact(xa).compile.toList
+    }.unsafeToFuture()
   }
 
-  def makeInactive(db:String, id:Int): Unit ={
+  def makeInactive(db: String, id: Int): Unit = {
     val query =
       s"""
          |

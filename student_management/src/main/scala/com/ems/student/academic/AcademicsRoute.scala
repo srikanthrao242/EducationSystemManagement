@@ -21,7 +21,14 @@ trait AcademicsRoute extends SLF4JLogging with AcademicsServices {
         log.debug(s"got request for all-academics")
         complete(findAllAcademics(getDB(userId)))
       }
-    } ~ path("new-academic") {
+    } ~
+    path("academic-names") {
+      get {
+        log.debug(s"Got request for list academic Names")
+        complete(findAllAcademicNames(getDB(userId)))
+      }
+    } ~
+    path("new-academic") {
       post {
         entity(as[Academic]) { ac =>
           log.debug(s"got request for add new academic $ac")
