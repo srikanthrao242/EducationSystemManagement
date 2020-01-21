@@ -1,71 +1,85 @@
 package com.ems.utilities.student.entities
 
 import java.sql.Timestamp
+import spray.json._
+import DefaultJsonProtocol._
+case class StudentDetails(
+                           StudentID: Option[Int],
+                           FirstName: String,
+                           LastName: String,
+                           DOB: Timestamp,
+                           BloodGroup: String,
+                           Gender: String,
+                           Religion: String,
+                           Address: String,
+                           City: String,
+                           State: String,
+                           PinCode: String,
+                           Mobile: String,
+                           Country: String,
+                           Email: String,
+                           IsActive: Boolean,
+                           ProfileImage: String
+                         )
 
-case class Student(StdId: Option[Int],
-                   FirstName: String,
-                   MiddleName: String,
-                   LastName: String,
-                   DOB: Timestamp,
-                   BloodGroup: Option[String],
-                   Gender: String,
-                   Religion: String,
-                   Address: String,
-                   City: String,
-                   State: String,
-                   PinCode: String,
-                   Mobile: Option[String],
-                   Country: String,
-                   Email: Option[String],
-                   IsActive: Boolean,
-                   ProfileImage: Option[String])
+case class ParentDetails(
+                          ID: Option[Int],
+                          FirstName: String,
+                          LastName: String,
+                          Occupation: String,
+                          Qualification: String,
+                          StudentID: Int,
+                          Religion: String,
+                          Address: String,
+                          City: String,
+                          State: String,
+                          PinCode: String,
+                          Country: String,
+                          Mobile: String,
+                          Email: String
+                        )
 
-case class ParentDetails(ParId: Option[Int],
-                         FirstName: String,
-                         LastName: String,
-                         Occupations: String,
-                         Qualification: String,
-                         StdId: Int,
-                         Religion: String,
-                         Address: String,
-                         City: String,
-                         State: String,
-                         PinCode: String,
-                         Country: String,
-                         Mobile: String,
-                         Email: String)
+case class Admission(
+                      AdmissionID: Option[Int],
+                      StudentID: Int,
+                      ClassID: Int,
+                      SectionID: Int,
+                      AdmissionDate: Int,
+                      AcademicID: Int
+                    )
 
-case class Class(ClassId: Option[Int], ClassStandard: String, NumberOfSections: Int)
+case class AdmissionFeeDetails(
+                                ID: Option[Int],
+                                AdmissionID: Int,
+                                StudentID: Int,
+                                AdmisionFee: Double,
+                                PaidFee: Double,
+                                PaidDate: Timestamp
+                              )
 
-case class ClassSections(SectionId: Option[Int], ClassId: Int, ClassTeacher: Int, RoomDetails: Option[String])
+case class Classes(
+                    ClassID: Option[Int],
+                    ClassName: String,
+                    AcademicID: Int,
+                    SectionID: Int,
+                    NumberOfSections: Int
+                  )
 
-case class Admission(AdmissionId: Option[Int],
-                     StdId: Int,
-                     ClassId: Int,
-                     SectionId: Int,
-                     AdmissionDate: Timestamp,
-                     MonthlyFee: Double,
-                     QuarterlyFee: Double,
-                     HalfYearlyFee: Double,
-                     YearlyFee: Double)
+case class ClassSections(
+                          SectionID: Option[Int],
+                          SectionName: String,
+                          TakeCarer: Int,
+                          RoomDetails: String
+                        )
 
-case class PreviousEducationDetails(EdId: Option[Int], StdId: Int, InstitutionName: String, Course: String, Year: String, TotalMarksObtained: Int)
+object StudentSer{
 
-case class AdmissionFeeDetails(id: Option[Int],
-                               AdmissionId: Int,
-                               StdId: Int,
-                               AdmissionFee: Double,
-                               ActualFee: Double,
-                               PaidFee: Double,
-                               PaidDate: Timestamp)
+  import com.ems.utilities.Utils._
+  implicit val studentDetailsF: RootJsonFormat[StudentDetails] = jsonFormat16(StudentDetails)
+  implicit val parentDetailsF: RootJsonFormat[ParentDetails] = jsonFormat14(ParentDetails)
+  implicit val admissionF: RootJsonFormat[Admission] = jsonFormat6(Admission)
+  implicit val admissionFeeDetailsF: RootJsonFormat[AdmissionFeeDetails] = jsonFormat6(AdmissionFeeDetails)
+  implicit val classesF: RootJsonFormat[Classes] = jsonFormat5(Classes)
+  implicit val classSectionsF: RootJsonFormat[ClassSections] = jsonFormat4(ClassSections)
 
-case class StudentFeeDetails(id:Option[Int],
-                             Month:String,
-                             PaidFee:Double,
-                             DueFee:Double,
-                             DueFeeForQuarterly:Double,
-                             DueFeeForHalfYearly:Double,
-                             DueFeeForYearly:Double,
-                             AdmissionDueFee:Double,
-                             StdId:Int,
-                             AdmissionId:Int)
+}

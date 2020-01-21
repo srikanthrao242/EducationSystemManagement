@@ -349,6 +349,8 @@ trait UserSchema extends SLF4JLogging {
          |  `AcademicID` INT NULL,
          |  `SectionID` INT NULL,
          |  `NumberOfSections` INT NULL,
+         |  `Fee` DOUBLE NULL,
+         |  `FeeType` ENUM('MONTHLY', 'QUARTERLY', 'HALFYEARLY', 'YEARLY') NULL
          |  PRIMARY KEY (`ClassID`),
          |  INDEX `academic_class_idx` (`AcademicID` ASC) VISIBLE,
          |  INDEX `section_class_idx` (`SectionID` ASC) VISIBLE,
