@@ -17,6 +17,7 @@ import org.ems.util.ExceptionHandling._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import scala.util.{Failure, Success}
 import com.ems.student.academic.AcademicsRoute
+import com.ems.student.class_details.ClassesRoute
 trait Router
   extends RouteConcatenation
   with CompanyRoutes
@@ -26,6 +27,7 @@ trait Router
   with SalaryRoutes
   with BankRoutes
   with AcademicsRoute
+  with ClassesRoute
   with CORSHandler {
   this: AkkaCoreModule =>
   val client = ESMConfig.config.client
@@ -55,7 +57,8 @@ trait Router
             employeesRoute ~
             salaryRoute ~
             bankRoute ~
-            academicRoute
+            academicRoute ~
+            classesRoute
           }
         }
       }

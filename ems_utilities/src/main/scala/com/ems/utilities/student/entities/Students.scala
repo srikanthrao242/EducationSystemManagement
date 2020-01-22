@@ -61,16 +61,23 @@ case class Classes(
                     ClassID: Option[Int],
                     ClassName: String,
                     AcademicID: Int,
-                    SectionID: Int,
-                    NumberOfSections: Int
+                    NumberOfSections: Int,
+                    Fee: Double,
+                    FeeType:String
                   )
 
 case class ClassSections(
                           SectionID: Option[Int],
                           SectionName: String,
                           TakeCarer: Int,
-                          RoomDetails: String
+                          RoomDetails: String,
+                          ClassID:Option[Int]
                         )
+
+case class ClassCreateRequest(
+                             classes: Classes,
+                             sections: List[ClassSections]
+                             )
 
 object StudentSer{
 
@@ -79,7 +86,8 @@ object StudentSer{
   implicit val parentDetailsF: RootJsonFormat[ParentDetails] = jsonFormat14(ParentDetails)
   implicit val admissionF: RootJsonFormat[Admission] = jsonFormat6(Admission)
   implicit val admissionFeeDetailsF: RootJsonFormat[AdmissionFeeDetails] = jsonFormat6(AdmissionFeeDetails)
-  implicit val classesF: RootJsonFormat[Classes] = jsonFormat5(Classes)
-  implicit val classSectionsF: RootJsonFormat[ClassSections] = jsonFormat4(ClassSections)
+  implicit val classesF: RootJsonFormat[Classes] = jsonFormat6(Classes)
+  implicit val classSectionsF: RootJsonFormat[ClassSections] = jsonFormat5(ClassSections)
+  implicit val classCreateRequestF: RootJsonFormat[ClassCreateRequest] = jsonFormat2(ClassCreateRequest)
 
 }

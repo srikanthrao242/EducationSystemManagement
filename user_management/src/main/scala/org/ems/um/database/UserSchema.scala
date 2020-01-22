@@ -324,22 +324,6 @@ trait UserSchema extends SLF4JLogging {
     }
   }
 
-  def createSections(db: String): IO[Int] = {
-    val query =
-      s"""
-         |CREATE TABLE `$db`.`class_sections` (
-         |  `SectionID` INT NOT NULL AUTO_INCREMENT,
-         |  `SectionName` VARCHAR(45) NULL,
-         |  `TakeCarer` INT NULL,
-         |  `RoomDetails` VARCHAR(45) NULL,
-         |  PRIMARY KEY (`SectionID`));
-         |""".stripMargin
-    log.debug(query.toString)
-    DbModule.transactor.use { xa =>
-      Update(query).run().transact(xa)
-    }
-  }
-
   def createClasses(db: String): IO[Int] = {
     val query =
       s"""
@@ -347,7 +331,6 @@ trait UserSchema extends SLF4JLogging {
          |  `ClassID` INT NOT NULL AUTO_INCREMENT,
          |  `ClassName` VARCHAR(45) NULL,
          |  `AcademicID` INT NULL,
-         |  `SectionID` INT NULL,
          |  `NumberOfSections` INT NULL,
          |  `Fee` DOUBLE NULL,
          |  `FeeType` ENUM('MONTHLY', 'QUARTERLY', 'HALFYEARLY', 'YEARLY') NULL
@@ -358,13 +341,30 @@ trait UserSchema extends SLF4JLogging {
          |    FOREIGN KEY (`AcademicID`)
          |    REFERENCES `$db`.`academic_details` (`AcademicID`)
          |    ON DELETE NO ACTION
-         |    ON UPDATE NO ACTION,
-         |  CONSTRAINT `section_class`
-         |    FOREIGN KEY (`SectionID`)
-         |    REFERENCES `$db`.`class_sections` (`SectionID`)
-         |    ON DELETE NO ACTION
-         |    ON UPDATE NO ACTION);
+         |    ON UPDATE NO ACTION;
          |
+         |""".stripMargin
+    log.debug(query.toString)
+    DbModule.transactor.use { xa =>
+      Update(query).run().transact(xa)
+    }
+  }
+
+  def createSections(db: String): IO[Int] = {
+    val query =
+      s"""
+         |CREATE TABLE `$db`.`class_sections` (
+         |  `SectionID` INT NOT NULL AUTO_INCREMENT,
+         |  `SectionName` VARCHAR(45) NULL,
+         |  `TakeCarer` INT NULL,
+         |  `ClassID` INT NULL,
+         |  `RoomDetails` VARCHAR(45) NULL,
+         |  PRIMARY KEY (`SectionID`))
+         |  CONSTRAINT `class_sections`
+         |  FOREIGN KEY (`ClassID`)
+         |  REFERENCES `ems_12`.`classes` (`ClassID`)
+         |  ON DELETE NO ACTION
+         |  ON UPDATE NO ACTION;
          |""".stripMargin
     log.debug(query.toString)
     DbModule.transactor.use { xa =>
