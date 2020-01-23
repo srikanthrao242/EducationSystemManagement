@@ -22,6 +22,7 @@ object DBUtil {
     def findAll(db:String = ""): Stream[ConnectionIO, A]
 
     def findBy(k: Int, column:String,db:String=""): ConnectionIO[Option[A]]
+    def findAllBy(k: Int, column:String,db:String=""): Stream[ConnectionIO, A]
 
     def update(k: Key, a: A ,db:String = ""): ConnectionIO[Int]
 
@@ -87,6 +88,14 @@ object DBUtil {
                 FROM ${concatDot(db)}$table
                 WHERE $column = ?
               """).option(key)
+
+            def findAllBy(key: Int, column:String,db:String=""): Stream[doobie.ConnectionIO, A] =
+              Query0[A](
+                s"""
+                SELECT ${cols.mkString(", ")}
+                FROM ${concatDot(db)}$table
+                WHERE $column = $key
+              """).stream
 
             def update(k: Key, a: A, db:String = ""): ConnectionIO[Int] =
               Update[(A, Key)](

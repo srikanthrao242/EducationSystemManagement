@@ -1,7 +1,7 @@
 /**/
 package com.ems.student.class_details
 
-import com.ems.utilities.student.entities.ClassCreateRequest
+import com.ems.utilities.student.entities.{ClassCreateRequest, ClassSectionDataSource}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -21,5 +21,19 @@ trait ClassServices extends ClassDetailsService with ClassSectionService {
         (classId, sectionId)
       }
     })
+
+
+  def getClassesAndSections(academicID:Int,db: String): Future[List[ClassSectionDataSource]] ={
+    for{
+      classes <- getClasses(academicID,db)
+      resp <- Future.traverse(classes)(cls=>
+        for{
+          sections <- getAllClassSections(cls.ClassID.get, db)
+        }yield {
+          ClassSectionDataSource(cls.ClassName,cls.NumberOfSections, cls.Fee, cls.FeeType, sections)
+        }
+      )
+    }yield resp
+  }
 
 }

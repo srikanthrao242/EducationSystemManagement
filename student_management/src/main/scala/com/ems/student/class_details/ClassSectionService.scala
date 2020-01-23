@@ -24,4 +24,11 @@ trait ClassSectionService {
       insert(`class`, db).transact(xa)
     }.unsafeToFuture()
 
+
+  def getAllClassSections(classID:Int,db:String): Future[List[ClassSections]] ={
+    DbModule.transactor.use{xa=>
+      findAllBy(classID, "ClassID", db).transact(xa).compile.toList
+    }.unsafeToFuture()
+  }
+
 }

@@ -15,12 +15,17 @@ import scala.concurrent.ExecutionContext
 trait ClassesRoute extends SLF4JLogging with ClassServices {
   implicit val executor: ExecutionContext
 
-  val classesRoute: Route = pathPrefix("classes" / "sections" / IntNumber) { userId =>
-    post {
-      entity(as[List[ClassCreateRequest]]) { req =>
-        complete(createClassesAndSections(req, DbModule.getDB(userId)))
+  val classesRoute: Route = pathPrefix("classes" / "sections" / IntNumber) {
+    userId =>
+      post {
+        entity(as[List[ClassCreateRequest]]) { req =>
+          complete(createClassesAndSections(req, DbModule.getDB(userId)))
+        }
+      } ~ path(IntNumber) { academicId =>
+        get {
+          complete(getClassesAndSections(academicId, DbModule.getDB(userId)))
+        }
       }
-    }
   }
 
 }

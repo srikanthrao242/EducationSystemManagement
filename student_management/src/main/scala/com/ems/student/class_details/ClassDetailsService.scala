@@ -25,4 +25,10 @@ trait ClassDetailsService {
     }.unsafeToFuture()
   }
 
+  def getClasses(academicId:Int,db:String): Future[List[Classes]] ={
+    DbModule.transactor.use{xa=>
+      findAllBy(academicId, "AcademicID", db).transact(xa).compile.toList
+    }.unsafeToFuture()
+  }
+
 }
