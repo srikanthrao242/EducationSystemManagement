@@ -16,16 +16,26 @@ trait ClassesRoute extends SLF4JLogging with ClassServices {
   implicit val executor: ExecutionContext
 
   val classesRoute: Route = pathPrefix("classes" / "sections" / IntNumber) {
-    userId =>
-      post {
-        entity(as[List[ClassCreateRequest]]) { req =>
-          complete(createClassesAndSections(req, DbModule.getDB(userId)))
+    userId => {
+      path("class" / IntNumber) { accId =>
+        get {
+          complete(getClasses(accId, DbModule.getDB(userId)))
+        }
+      } ~ path("section" / IntNumber) { classId =>
+        get {
+          complete(getAllClassSections(classId, DbModule.getDB(userId)))
         }
       } ~ path(IntNumber) { academicId =>
         get {
           complete(getClassesAndSections(academicId, DbModule.getDB(userId)))
         }
+      }~
+      post {
+        entity(as[List[ClassCreateRequest]]) { req =>
+          complete(createClassesAndSections(req, DbModule.getDB(userId)))
+        }
       }
+    }
   }
 
 }

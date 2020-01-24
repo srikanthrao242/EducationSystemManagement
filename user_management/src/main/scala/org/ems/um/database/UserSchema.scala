@@ -270,10 +270,12 @@ trait UserSchema extends SLF4JLogging {
       s"""
          |CREATE TABLE `$db`.`parent_details` (
          |  `ID` INT NOT NULL AUTO_INCREMENT ,
-         |  `FirstName` VARCHAR(45) NULL,
-         |  `LastName` VARCHAR(45) NULL,
-         |  `Occupation` VARCHAR(45) NULL,
-         |  `Qualification` VARCHAR(45) NULL,
+         |  `FatherName` VARCHAR(45) NULL,
+         |  `MotherName` VARCHAR(45) NULL,
+         |  `FatherOccupation` VARCHAR(45) NULL,
+         |  `MotherOccupation` VARCHAR(45) NULL,
+         |  `MotherQualification` VARCHAR(45)
+         |  `FatherQualification` VARCHAR(45) NULL,
          |  `StudentID` INT NULL,
          |  `Religion` VARCHAR(45) NULL,
          |  `Address` VARCHAR(100) NULL,

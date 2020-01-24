@@ -25,10 +25,10 @@ case class StudentDetails(
 
 case class ParentDetails(
                           ID: Option[Int],
-                          FirstName: String,
-                          LastName: String,
-                          Occupation: String,
-                          Qualification: String,
+                          FatherName: String,
+                          MotherName: String,
+                          FatherOccupation: String,
+                          FatherQualification: String,
                           StudentID: Int,
                           Religion: String,
                           Address: String,
@@ -37,7 +37,9 @@ case class ParentDetails(
                           PinCode: String,
                           Country: String,
                           Mobile: String,
-                          Email: String
+                          Email: String,
+                          MotherOccupation:String,
+                          MotherQualification:String
                         )
 
 case class Admission(
@@ -93,7 +95,7 @@ object StudentSer {
   import com.ems.utilities.Utils._
 
   implicit val studentDetailsF: RootJsonFormat[StudentDetails] = jsonFormat16(StudentDetails)
-  implicit val parentDetailsF: RootJsonFormat[ParentDetails] = jsonFormat14(ParentDetails)
+  implicit val parentDetailsF: RootJsonFormat[ParentDetails] = jsonFormat16(ParentDetails)
   implicit val admissionF: RootJsonFormat[Admission] = jsonFormat6(Admission)
   implicit val admissionFeeDetailsF: RootJsonFormat[AdmissionFeeDetails] = jsonFormat6(AdmissionFeeDetails)
   implicit val classesF: RootJsonFormat[Classes] = jsonFormat6(Classes)

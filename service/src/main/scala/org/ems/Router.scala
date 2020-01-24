@@ -50,6 +50,10 @@ trait Router
               post {
                 uploadFile("employeeimages")
               }
+            }~ path("student-profile") {
+              post {
+                uploadFile("studentimages")
+              }
             } ~
             companyRoute ~
             registerRoute ~
