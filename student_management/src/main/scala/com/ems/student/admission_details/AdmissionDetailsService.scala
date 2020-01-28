@@ -26,4 +26,9 @@ trait AdmissionDetailsService {
       insert(admission, db).transact(xa)
     }.unsafeToFuture()
 
+  def deleteAdmission(id:Int,db:String):Future[Int]=
+    DbModule.transactor.use{xa=>
+      delete(id,db).transact(xa)
+    }.unsafeToFuture()
+
 }

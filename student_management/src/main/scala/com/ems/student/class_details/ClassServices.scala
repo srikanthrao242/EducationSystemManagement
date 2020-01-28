@@ -5,7 +5,7 @@ import com.ems.utilities.student.entities.{ClassCreateRequest, ClassSectionDataS
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ClassServices extends ClassDetailsService with ClassSectionService {
+trait ClassServices extends ClassDetailsService with ClassSectionService with ClassAndSectionSchema {
 
   implicit val executor: ExecutionContext
   def createClassesAndSections(createRequest: List[ClassCreateRequest],
@@ -15,25 +15,33 @@ trait ClassServices extends ClassDetailsService with ClassSectionService {
         classId <- addClasses(req.classes, db)
         sectionId <- Future.traverse(req.sections)(
           sections =>
-            addClassSection(sections.copy(ClassID = Some(classId)), db)
+            for {
+              secID <- addClassSection(sections.copy(ClassID = Some(classId)),
+                                       db)
+              _ <- createSchemaForNewAcademic(db,req.classes.AcademicID,classId,secID)
+            } yield secID
         )
       } yield {
         (classId, sectionId)
       }
     })
 
-
-  def getClassesAndSections(academicID:Int,db: String): Future[List[ClassSectionDataSource]] ={
-    for{
-      classes <- getClasses(academicID,db)
-      resp <- Future.traverse(classes)(cls=>
-        for{
-          sections <- getAllClassSections(cls.ClassID.get, db)
-        }yield {
-          ClassSectionDataSource(cls.ClassName,cls.NumberOfSections, cls.Fee, cls.FeeType, sections)
+  def getClassesAndSections(academicID: Int,
+                            db: String): Future[List[ClassSectionDataSource]] =
+    for {
+      classes <- getClasses(academicID, db)
+      resp <- Future.traverse(classes)(
+        cls =>
+          for {
+            sections <- getAllClassSections(cls.ClassID.get, db)
+          } yield {
+            ClassSectionDataSource(cls.ClassName,
+                                   cls.NumberOfSections,
+                                   cls.Fee,
+                                   cls.FeeType,
+                                   sections)
         }
       )
-    }yield resp
-  }
+    } yield resp
 
 }

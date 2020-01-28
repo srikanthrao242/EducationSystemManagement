@@ -23,4 +23,10 @@ trait ParentDetailsService {
       insert(parent, db).transact(xa)
     }.unsafeToFuture()
 
+  def deleteParentDetails(id:Int,db:String):Future[Int] ={
+    DbModule.transactor.use{xa=>
+      delete(id,db).transact(xa)
+    }.unsafeToFuture()
+  }
+
 }

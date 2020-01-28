@@ -15,8 +15,10 @@ import org.ems.um.UserRoutes
 import org.ems.util.{CORSHandler, Util}
 import org.ems.util.ExceptionHandling._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+
 import scala.util.{Failure, Success}
 import com.ems.student.academic.AcademicsRoute
+import com.ems.student.adminssion.NewStudent
 import com.ems.student.class_details.ClassesRoute
 trait Router
   extends RouteConcatenation
@@ -28,6 +30,7 @@ trait Router
   with BankRoutes
   with AcademicsRoute
   with ClassesRoute
+  with NewStudent
   with CORSHandler {
   this: AkkaCoreModule =>
   val client = ESMConfig.config.client
@@ -50,7 +53,7 @@ trait Router
               post {
                 uploadFile("employeeimages")
               }
-            }~ path("student-profile") {
+            } ~ path("student-profile") {
               post {
                 uploadFile("studentimages")
               }
@@ -62,7 +65,8 @@ trait Router
             salaryRoute ~
             bankRoute ~
             academicRoute ~
-            classesRoute
+            classesRoute ~
+            newStudent
           }
         }
       }

@@ -1,6 +1,7 @@
 package com.ems.utilities.student.entities
 
-import java.sql.Timestamp
+import java.sql.{Date, Timestamp}
+
 import spray.json._
 import DefaultJsonProtocol._
 
@@ -8,7 +9,7 @@ case class StudentDetails(
                            StudentID: Option[Int],
                            FirstName: String,
                            LastName: String,
-                           DOB: Timestamp,
+                           DOB: Date,
                            BloodGroup: String,
                            Gender: String,
                            Religion: String,
@@ -38,8 +39,8 @@ case class ParentDetails(
                           Country: String,
                           Mobile: String,
                           Email: String,
-                          MotherOccupation:String,
-                          MotherQualification:String
+                          MotherOccupation: String,
+                          MotherQualification: String
                         )
 
 case class Admission(
@@ -47,7 +48,7 @@ case class Admission(
                       StudentID: Int,
                       ClassID: Int,
                       SectionID: Int,
-                      AdmissionDate: Int,
+                      AdmissionDate: Timestamp,
                       AcademicID: Int
                     )
 
@@ -90,6 +91,8 @@ case class ClassCreateRequest(
                                sections: List[ClassSections]
                              )
 
+case class EducationQualification(EdID: Option[Int], StudentID: Int, InstitutionName: String, Course: String, Year: Int, TotalMarksObtained: Double)
+
 object StudentSer {
 
   import com.ems.utilities.Utils._
@@ -102,5 +105,6 @@ object StudentSer {
   implicit val classSectionsF: RootJsonFormat[ClassSections] = jsonFormat5(ClassSections)
   implicit val classCreateRequestF: RootJsonFormat[ClassCreateRequest] = jsonFormat2(ClassCreateRequest)
   implicit val classSectionDataSourceF: RootJsonFormat[ClassSectionDataSource] = jsonFormat5(ClassSectionDataSource)
+  implicit val educationQualificationF: RootJsonFormat[EducationQualification] = jsonFormat6(EducationQualification)
 
 }

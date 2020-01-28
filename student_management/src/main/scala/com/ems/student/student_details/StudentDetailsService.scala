@@ -19,7 +19,6 @@ trait StudentDetailsService {
   val studentDetailsDn: Aux[StudentDetails, Int] = Dao[StudentDetails]
   import studentDetailsDn._
 
-  def getAllStudentDetails(academicName: String, className: String): Unit = {}
 
   def getStudentDetails(id: Int, db: String): Future[Option[StudentDetails]] =
     DbModule.transactor.use { xa =>
@@ -30,5 +29,11 @@ trait StudentDetailsService {
     DbModule.transactor.use { xa =>
       insert(student, db).transact(xa)
     }.unsafeToFuture()
+
+  def deleteStudent(id:Int, db:String):Future[Int]={
+    DbModule.transactor.use{xa=>
+      delete(id,db).transact(xa)
+    }.unsafeToFuture()
+  }
 
 }

@@ -212,7 +212,7 @@ trait UserSchema extends SLF4JLogging {
   def createAcademic(schema: String): IO[Int] = {
     val query =
       s"""
-         |  CREATE TABLE `$schema`.`academic` (
+         |  CREATE TABLE IF NOT EXISTS `$schema`.`academic` (
          |  `AcademicID` INT NOT NULL AUTO_INCREMENT,
          |  `AcademicName` VARCHAR(45) NULL,
          |  `StartDate` TIMESTAMP NULL,
@@ -239,11 +239,11 @@ trait UserSchema extends SLF4JLogging {
   def createStudentDetails(db: String): IO[Int] = {
     val query =
       s"""
-         |CREATE TABLE `$db`.`student_details` (
+         |CREATE TABLE IF NOT EXISTS `$db`.`student_details` (
          |  `StudentID` INT NOT NULL AUTO_INCREMENT ,
          |  `FirstName` VARCHAR(100) NULL,
          |  `LastName` VARCHAR(100) NULL,
-         |  `DOB` DATETIME NULL,
+         |  `DOB` DATE NULL,
          |  `BloodGroup` VARCHAR(45) NULL,
          |  `Gender` ENUM('Male', 'Female') NULL,
          |  `Religion` VARCHAR(45) NULL,
@@ -268,7 +268,7 @@ trait UserSchema extends SLF4JLogging {
   def createParentDetails(db: String): IO[Int] = {
     val query =
       s"""
-         |CREATE TABLE `$db`.`parent_details` (
+         |CREATE TABLE IF NOT EXISTS `$db`.`parent_details` (
          |  `ID` INT NOT NULL AUTO_INCREMENT ,
          |  `FatherName` VARCHAR(45) NULL,
          |  `MotherName` VARCHAR(45) NULL,
@@ -304,7 +304,7 @@ trait UserSchema extends SLF4JLogging {
   def createEdQualifications(db: String): IO[Int] = {
     val query =
       s"""
-         |CREATE TABLE `$db`.`education_qualification` (
+         |CREATE TABLE IF NOT EXISTS `$db`.`education_qualification` (
          |  `EdID` INT NOT NULL AUTO_INCREMENT,
          |  `StudentID` INT NULL,
          |  `InstitutionName` VARCHAR(100) NULL,
@@ -329,7 +329,7 @@ trait UserSchema extends SLF4JLogging {
   def createClasses(db: String): IO[Int] = {
     val query =
       s"""
-         |CREATE TABLE `$db`.`classes` (
+         |CREATE TABLE IF NOT EXISTS `$db`.`classes` (
          |  `ClassID` INT NOT NULL AUTO_INCREMENT,
          |  `ClassName` VARCHAR(45) NULL,
          |  `AcademicID` INT NULL,
@@ -355,7 +355,7 @@ trait UserSchema extends SLF4JLogging {
   def createSections(db: String): IO[Int] = {
     val query =
       s"""
-         |CREATE TABLE `$db`.`class_sections` (
+         |CREATE TABLE IF NOT EXISTS `$db`.`class_sections` (
          |  `SectionID` INT NOT NULL AUTO_INCREMENT,
          |  `SectionName` VARCHAR(45) NULL,
          |  `TakeCarer` INT NULL,
@@ -377,7 +377,7 @@ trait UserSchema extends SLF4JLogging {
   def createAdmissionDetails(db: String): IO[Int] = {
     val query =
       s"""
-         |CREATE TABLE `$db`.`admission` (
+         |CREATE TABLE IF NOT EXISTS `$db`.`admission` (
          |  `AdmissionID` INT NOT NULL AUTO_INCREMENT,
          |  `StudentID` INT NULL,
          |  `ClassID` INT NULL,
@@ -421,7 +421,7 @@ trait UserSchema extends SLF4JLogging {
   def createAdmissionFeeDetails(db: String): IO[Int] = {
     val query =
       s"""
-         |CREATE TABLE `$db`.`admission_fee_details` (
+         |CREATE TABLE IF NOT EXISTS `$db`.`admission_fee_details` (
          |  `ID` INT NOT NULL AUTO_INCREMENT,
          |  `AdmissionID` INT NULL,
          |  `StudentID` INT NULL,
