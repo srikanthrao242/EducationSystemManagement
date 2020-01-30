@@ -3,7 +3,7 @@ package com.ems.student.adminssion
 
 import akka.event.slf4j.SLF4JLogging
 import com.ems.student.parent_details.ParentDetailsService
-import com.ems.student.student_details.StudentDetailsService
+import com.ems.student.student_details.{AcademicStudentService, StudentDetailsService}
 import com.ems.utilities.Mappable
 import com.ems.utilities.student.entities._
 import com.ems.utilities.student.entities.StudentSer._
@@ -19,14 +19,15 @@ trait NewAdmissionServices
   with EducationQualificationService
   with AdmissionDetailsService
   with AdmissionFeeDetailsService
-  with SLF4JLogging{
+  with AcademicStudentService
+  with SLF4JLogging {
   implicit val executor: ExecutionContext
 
   def recoverStudentParent(studentId: Int, parentID: Int, db: String): Unit =
     for {
       stuId <- deleteStudent(studentId, db)
       parId <- deleteParentDetails(parentID, db)
-    } yield { log.debug(s"deleted student and parent $stuId, $parId")}
+    } yield { log.debug(s"deleted student and parent $stuId, $parId") }
 
   def recoverStudentParentAdmin(studentId: Int,
                                 parentID: Int,
@@ -36,7 +37,9 @@ trait NewAdmissionServices
       stuId <- deleteStudent(studentId, db)
       parId <- deleteParentDetails(parentID, db)
       admId <- deleteAdmission(admissionId, db)
-    } yield { log.debug(s"deleted student, parent and admission $stuId, $parId, $admId")}
+    } yield {
+      log.debug(s"deleted student, parent and admission $stuId, $parId, $admId")
+    }
 
   def admitNewStudent(req: Map[String, Any], db: String): Future[Int] =
     for {
@@ -58,6 +61,28 @@ trait NewAdmissionServices
           recoverStudentParent(studentId, parentID, db)
           throw ex
       }
+      (admissionId, admission) <- addAdmissionDetails(req,
+                                                      db,
+                                                      studentId,
+                                                      parentID)
+      _ <- addAcademicStudent(AcademicStudent(None, studentId),
+                              StudentUtils.getDB(db,
+                                                 admission.AcademicID,
+                                                 admission.ClassID,
+                                                 admission.SectionID)) recover {
+        case ex: Exception =>
+          recoverStudentParentAdmin(studentId, parentID, admissionId, db)
+          throw ex
+      }
+    } yield {
+      admissionId
+    }
+
+  def addAdmissionDetails(req: Map[String, Any],
+                          db: String,
+                          studentId: Int,
+                          parentID: Int): Future[(Int, Admission)] =
+    for {
       admission <- Mappable.fromMap[Admission](req + ("StudentID" -> studentId)) recover {
         case ex: Exception =>
           recoverStudentParent(studentId, parentID, db)
@@ -81,7 +106,7 @@ trait NewAdmissionServices
           throw ex
       }
     } yield {
-      admissionId
+      (admissionId, admission)
     }
 
 }

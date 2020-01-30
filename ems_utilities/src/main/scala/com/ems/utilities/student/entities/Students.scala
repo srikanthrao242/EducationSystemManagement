@@ -91,6 +91,10 @@ case class ClassCreateRequest(
                                sections: List[ClassSections]
                              )
 
+case class ListStudentRequest(academicID:Int, classID:Int, sectionID:Int)
+
+case class AcademicStudent(ID:Option[Int], StudentID:Int)
+
 case class EducationQualification(EdID: Option[Int], StudentID: Int, InstitutionName: String, Course: String, Year: Int, TotalMarksObtained: Double)
 
 object StudentSer {
@@ -106,5 +110,7 @@ object StudentSer {
   implicit val classCreateRequestF: RootJsonFormat[ClassCreateRequest] = jsonFormat2(ClassCreateRequest)
   implicit val classSectionDataSourceF: RootJsonFormat[ClassSectionDataSource] = jsonFormat5(ClassSectionDataSource)
   implicit val educationQualificationF: RootJsonFormat[EducationQualification] = jsonFormat6(EducationQualification)
+  implicit val academicStudentF: RootJsonFormat[AcademicStudent] = jsonFormat2(AcademicStudent)
+  implicit val listStudentRequestF: RootJsonFormat[ListStudentRequest] = jsonFormat3(ListStudentRequest)
 
 }

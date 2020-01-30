@@ -8,7 +8,7 @@ import doobie._
 import doobie.implicits._
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ClassAndSectionSchema extends SLF4JLogging{
+trait ClassAndSectionSchema extends SLF4JLogging {
 
   implicit val executor: ExecutionContext
   def createSchemaForNewAcademic(db: String,
@@ -16,15 +16,15 @@ trait ClassAndSectionSchema extends SLF4JLogging{
                                  classId: Int,
                                  sectionId: Int): Future[Int] = {
     val schema = s"${db}_${academicId}_${classId}_$sectionId"
-    for{
-      clsDB <- createDBForAcClsSec(schema)
-      stdID <- createStudent(schema,db)
-    }yield {
+    for {
+      _ <- createDBForAcClsSec(schema)
+      stdID <- createStudent(schema, db)
+    } yield {
       stdID
     }
   }
 
-  def createDBForAcClsSec(db:String): Future[Int] ={
+  def createDBForAcClsSec(db: String): Future[Int] = {
     val query = s"CREATE DATABASE IF NOT EXISTS $db"
     log.debug(query)
     DbModule.transactor.use { xa =>
@@ -32,20 +32,20 @@ trait ClassAndSectionSchema extends SLF4JLogging{
     }.unsafeToFuture()
   }
 
-  def createStudent(schema:String,db:String): Future[Int] ={
+  def createStudent(schema: String, db: String): Future[Int] = {
     val query =
       s"""
-        |CREATE TABLE IF NOT EXISTS `$schema`.`students` (
-        |  `ID` INT NOT NULL AUTO_INCREMENT,
-        |  `StudentID` INT NULL,
-        |  PRIMARY KEY (`ID`),
-        |  INDEX `studentId_student_idx` (`StudentID` ASC) VISIBLE,
-        |  CONSTRAINT `studentId_student`
-        |    FOREIGN KEY (`StudentID`)
-        |    REFERENCES `$db`.`student_details` (`StudentID`)
-        |    ON DELETE NO ACTION
-        |    ON UPDATE NO ACTION);
-        |""".stripMargin
+         |CREATE TABLE IF NOT EXISTS `$schema`.`students` (
+         |  `ID` INT NOT NULL AUTO_INCREMENT,
+         |  `StudentID` INT NULL,
+         |  PRIMARY KEY (`ID`),
+         |  INDEX `studentId_student_idx` (`StudentID` ASC) VISIBLE,
+         |  CONSTRAINT `studentId_student`
+         |    FOREIGN KEY (`StudentID`)
+         |    REFERENCES `$db`.`student_details` (`StudentID`)
+         |    ON DELETE NO ACTION
+         |    ON UPDATE NO ACTION);
+         |""".stripMargin
     log.debug(query)
     DbModule.transactor.use { xa =>
       Update(query).run().transact(xa)

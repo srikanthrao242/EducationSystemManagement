@@ -2,8 +2,8 @@ package com.ems.utilities.student.entities
 
 object StudentUtils {
 
-  def getDB(academicYear: String, employeeId: String): String = {
-    s"ems_${academicYear}_$employeeId"
+  def getDB(db:String, academicId:Int, classId:Int, sectionId:Int): String = {
+    s"${db}_${academicId}_${classId}_$sectionId"
   }
 
 }
