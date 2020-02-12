@@ -12,7 +12,7 @@ object FileResponseHelper {
 
   def contentType(fileName: String): ContentType =
     (fileName.split("\\.").last) match {
-      case "jpg"  => ContentType(MediaTypes.`image/jpeg`)
+      case "jpg" | "jpeg"  => ContentType(MediaTypes.`image/jpeg`)
       case "png"  => ContentType(MediaTypes.`image/png`)
       case "html" => ContentTypes.`text/html(UTF-8)`
     }

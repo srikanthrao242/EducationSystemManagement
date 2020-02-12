@@ -53,4 +53,16 @@ trait StudentDetailsService {
       delete(id, db).transact(xa)
     }.unsafeToFuture()
 
+  def getStudentImage(id:Int,db:String): Future[Option[String]] ={
+    val query =
+      s"""
+         |select `ProfileImage` from `$db`.`student_details`
+         |where `StudentID`=$id
+         |""".stripMargin
+     DbModule.transactor.use{xa=>
+        Query0[String](query).option.transact(xa)
+      }.unsafeToFuture()
+
+  }
+
 }
