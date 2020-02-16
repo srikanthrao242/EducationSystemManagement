@@ -43,6 +43,8 @@ case class ParentDetails(
                           MotherQualification: String
                         )
 
+case class UpdateStudentDetails(parent:ParentDetails, student: StudentDetails)
+
 case class Admission(
                       AdmissionID: Option[Int],
                       StudentID: Int,
@@ -112,5 +114,6 @@ object StudentSer {
   implicit val educationQualificationF: RootJsonFormat[EducationQualification] = jsonFormat6(EducationQualification)
   implicit val academicStudentF: RootJsonFormat[AcademicStudent] = jsonFormat2(AcademicStudent)
   implicit val listStudentRequestF: RootJsonFormat[ListStudentRequest] = jsonFormat3(ListStudentRequest)
+  implicit val updateStudentDetailsF: RootJsonFormat[UpdateStudentDetails] = jsonFormat2(UpdateStudentDetails)
 
 }

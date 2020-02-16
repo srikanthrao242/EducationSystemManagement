@@ -22,9 +22,12 @@ object DBUtil {
     def findAll(db:String = ""): Stream[ConnectionIO, A]
 
     def findBy(k: Int, column:String,db:String=""): ConnectionIO[Option[A]]
+
     def findAllBy(k: Int, column:String,db:String=""): Stream[ConnectionIO, A]
 
     def update(k: Key, a: A ,db:String = ""): ConnectionIO[Int]
+
+    def updateBy(k: Int,column:String, a: A ,db:String = ""): ConnectionIO[Int]
 
     def delete(k: Key,db:String = ""): ConnectionIO[Int]
 
@@ -103,6 +106,14 @@ object DBUtil {
                 UPDATE ${concatDot(db)}$table
                 SET ${cols.map(_ + " = ?").mkString(", ")}
                 WHERE $keyCol = ?
+              """).run((a, k))
+
+            def updateBy(k: Int, column:String, a: A, db:String = ""): ConnectionIO[Int] =
+              Update[(A, Int)](
+                s"""
+                UPDATE ${concatDot(db)}$table
+                SET ${cols.map(_ + " = ?").mkString(", ")}
+                WHERE $column = ?
               """).run((a, k))
 
             def delete(k: Key, db:String = ""): ConnectionIO[Int] = {

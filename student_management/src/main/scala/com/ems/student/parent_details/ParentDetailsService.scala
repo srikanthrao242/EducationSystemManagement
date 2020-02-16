@@ -28,5 +28,15 @@ trait ParentDetailsService {
       delete(id,db).transact(xa)
     }.unsafeToFuture()
   }
+  def getParentDetails(studentId:Int, db:String):Future[Option[ParentDetails]]={
+    DbModule.transactor.use{xa=>
+      findBy(studentId, "StudentID",db).transact(xa)
+    }.unsafeToFuture()
+  }
+  def updateParentDetails(studentId:Int,parent:ParentDetails,db:String): Future[Int] ={
+    DbModule.transactor.use{xa=>
+      updateBy(studentId, "StudentID", parent, db).transact(xa)
+    }.unsafeToFuture()
+  }
 
 }

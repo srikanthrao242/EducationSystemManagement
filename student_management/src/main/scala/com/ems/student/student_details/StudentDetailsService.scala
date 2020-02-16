@@ -65,4 +65,16 @@ trait StudentDetailsService {
 
   }
 
+  def updateStudentDetails(student:StudentDetails, db:String): Future[Int] ={
+    student.StudentID match {
+      case Some(id)=>
+        DbModule.transactor.use{xa=>
+          update(id, student,db).transact(xa)
+        }.unsafeToFuture()
+      case None =>
+        throw new Exception("Student Id is required to update")
+    }
+
+  }
+
 }
