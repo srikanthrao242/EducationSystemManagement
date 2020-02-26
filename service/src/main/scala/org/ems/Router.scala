@@ -20,6 +20,7 @@ import scala.util.{Failure, Success}
 import com.ems.student.academic.AcademicsRoute
 import com.ems.student.adminssion.NewStudent
 import com.ems.student.class_details.ClassesRoute
+import com.ems.student.examinations.ExaminationRoute
 import com.ems.student.student_details.StudentDetailsRoute
 trait Router
   extends RouteConcatenation
@@ -33,6 +34,7 @@ trait Router
   with ClassesRoute
   with NewStudent
   with StudentDetailsRoute
+  with ExaminationRoute
   with CORSHandler {
   this: AkkaCoreModule =>
   val client = ESMConfig.config.client
@@ -69,7 +71,8 @@ trait Router
             academicRoute ~
             classesRoute ~
             newStudent ~
-            studentDetailsRoute
+            studentDetailsRoute ~
+            examinationRoute
           }
         }
       }

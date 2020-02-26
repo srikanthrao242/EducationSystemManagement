@@ -2,10 +2,13 @@
 package com.ems.student.examinations
 
 import cats.Show
+import com.ems.student.database.DbModule
 import com.ems.utilities.database.DBUtil.Dao
 import com.ems.utilities.database.DBUtil.Dao.Aux
 import com.ems.utilities.examination._
 import doobie.implicits._
+
+import scala.concurrent.Future
 
 trait ExaminationsService {
 
@@ -15,7 +18,11 @@ trait ExaminationsService {
   val examinations_detailsDn: Aux[Examinations_Details, Int] = Dao[Examinations_Details]
   import examinations_detailsDn._
 
-
+  def addExam(exam: Examinations_Details, db: String): Future[Int] ={
+    DbModule.transactor.use{xa=>
+      insert(exam,db).transact(xa)
+    }.unsafeToFuture()
+  }
 
 
 }
