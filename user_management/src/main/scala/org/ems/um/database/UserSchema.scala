@@ -450,4 +450,50 @@ trait UserSchema extends SLF4JLogging {
       Update(query).run().transact(xa)
     }
   }
+
+  def createExamTable(db: String): IO[Int] = {
+    val query =
+      s"""
+         |CREATE TABLE `$db`.`examinations` (
+         |  `ExamID` int(11) NOT NULL AUTO_INCREMENT,
+         |  `ExamName` varchar(100) DEFAULT NULL,
+         |  `ExamFor` int(11) DEFAULT NULL,
+         |  `TotalMarks` int(11) DEFAULT NULL,
+         |  `ExamDate` date DEFAULT NULL,
+         |  `CreatedDate` date DEFAULT NULL,
+         |  `AcademicID` int(11) DEFAULT NULL,
+         |  UNIQUE KEY `ExamID_UNIQUE` (`ExamID`),
+         |  KEY `academic_exam_idx` (`AcademicID`),
+         |  CONSTRAINT `academic_exam` FOREIGN KEY (`AcademicID`) REFERENCES `$db`.`academic_details` (`AcademicID`)
+         |)""".stripMargin
+    log.debug(query.toString)
+    DbModule.transactor.use { xa =>
+      Update(query).run().transact(xa)
+    }
+  }
+
+  def createExamSub(db:String): IO[Int] ={
+    val query =
+      s"""
+         |CREATE TABLE `$db`.`examination_subjects` (
+         |  `SubjectID` INT NOT NULL AUTO_INCREMENT,
+         |  `ExamID` INT NULL,
+         |  `Subject` VARCHAR(45) NULL,
+         |  `ExamDate` DATE NULL,
+         |  `CreatedDate` DATE NULL,
+         |  `TotalMarks` INT NULL,
+         |  PRIMARY KEY (`SubjectID`),
+         |  INDEX `exam_subject_idx` (`ExamID` ASC) VISIBLE,
+         |  CONSTRAINT `exam_subject`
+         |    FOREIGN KEY (`ExamID`)
+         |    REFERENCES `$db`.`examinations` (`ExamID`)
+         |    ON DELETE NO ACTION
+         |    ON UPDATE NO ACTION);
+         |""".stripMargin
+    log.debug(query.toString)
+    DbModule.transactor.use { xa =>
+      Update(query).run().transact(xa)
+    }
+  }
+
 }

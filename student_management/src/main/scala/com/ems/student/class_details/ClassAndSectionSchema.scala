@@ -2,7 +2,6 @@
 package com.ems.student.class_details
 
 import akka.event.slf4j.SLF4JLogging
-import cats.effect.IO
 import com.ems.student.database.DbModule
 import doobie.Update
 import doobie._
@@ -21,8 +20,6 @@ trait ClassAndSectionSchema extends SLF4JLogging {
     for {
       _ <- createDBForAcClsSec(schema)
       stdID <- createStudent(schema, db)
-      _ <- createExamTable(schema,db).unsafeToFuture()
-      _ <- createExamSub(schema).unsafeToFuture()
       _ <- createStudentMarks(schema,db)
     } yield {
       stdID
@@ -91,48 +88,5 @@ trait ClassAndSectionSchema extends SLF4JLogging {
       Update(query).run().transact(xa)
     }.unsafeToFuture()
   }
-
-  def createExamTable(schema: String, db: String): IO[Int] = {
-    val query =
-      s"""
-         |CREATE TABLE `$schema`.`examinations` (
-         |  `ExamID` INT NOT NULL AUTO_INCREMENT,
-         |  `ExamName` VARCHAR(100) NULL,
-         |  `ExamFor` VARCHAR(45) NULL,
-         |  `TotalMarks` INT NULL,
-         |  `ExamDate` DATE NULL,
-         |  `CreatedDate` DATE NULL,
-         |  UNIQUE INDEX `ExamID_UNIQUE` (`ExamID` ASC));
-         |""".stripMargin
-    log.debug(query.toString)
-    DbModule.transactor.use { xa =>
-      Update(query).run().transact(xa)
-    }
-  }
-
-  def createExamSub(db:String): IO[Int] ={
-    val query =
-      s"""
-         |CREATE TABLE `$db`.`examination_subjects` (
-         |  `SubjectID` INT NOT NULL AUTO_INCREMENT,
-         |  `ExamID` INT NULL,
-         |  `Subject` VARCHAR(45) NULL,
-         |  `ExamDate` DATE NULL,
-         |  `CreatedDate` DATE NULL,
-         |  `TotalMarks` INT NULL,
-         |  PRIMARY KEY (`SubjectID`),
-         |  INDEX `exam_subject_idx` (`ExamID` ASC) VISIBLE,
-         |  CONSTRAINT `exam_subject`
-         |    FOREIGN KEY (`ExamID`)
-         |    REFERENCES `$db`.`examinations` (`ExamID`)
-         |    ON DELETE NO ACTION
-         |    ON UPDATE NO ACTION);
-         |""".stripMargin
-    log.debug(query.toString)
-    DbModule.transactor.use { xa =>
-      Update(query).run().transact(xa)
-    }
-  }
-
 
 }
