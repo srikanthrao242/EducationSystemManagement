@@ -18,6 +18,14 @@ trait ExaminationRoute
   implicit val executor: ExecutionContext
   val examinationRoute: Route = pathPrefix("examination" / IntNumber) {
     userID =>
+    path("exams"/IntNumber){ academicId=>
+      get{
+        log.debug(s"got request to get all exams of academic $academicId")
+        complete{
+          getExams(academicId, DbModule.getDB(userID))
+        }
+      }
+    }~
       path("add-exam") {
         post {
           entity(as[Examinations_Details]) { exam =>
