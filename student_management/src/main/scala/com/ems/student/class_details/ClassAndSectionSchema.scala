@@ -16,7 +16,7 @@ trait ClassAndSectionSchema extends SLF4JLogging {
                                  academicId: Int,
                                  classId: Int,
                                  sectionId: Int): Future[Int] = {
-    val schema = s"${db}_${academicId}_${classId}_$sectionId"
+    val schema = s"${db}_${academicId}_${classId}_$   "
     for {
       _ <- createDBForAcClsSec(schema)
       stdID <- createStudent(schema, db)
