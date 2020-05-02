@@ -458,6 +458,7 @@ trait UserSchema extends SLF4JLogging {
          |  `ExamID` int(11) NOT NULL AUTO_INCREMENT,
          |  `ExamName` varchar(100) DEFAULT NULL,
          |  `ExamFor` int(11) DEFAULT NULL,
+         |  `sectionID` INT(11) DEFAULT 0,
          |  `TotalMarks` int(11) DEFAULT NULL,
          |  `ExamDate` date DEFAULT NULL,
          |  `CreatedDate` date DEFAULT NULL,
