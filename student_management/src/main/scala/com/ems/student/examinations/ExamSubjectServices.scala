@@ -31,4 +31,10 @@ trait ExamSubjectServices {
     }.unsafeToFuture()
   }
 
+  def deleteSubject(subjectID:Int, db:String): Future[Int] ={
+    DbModule.transactor.use{xa=>
+      deleteBy(subjectID, "SubjectID", db).transact(xa)
+    }.unsafeToFuture()
+  }
+
 }

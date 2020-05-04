@@ -40,7 +40,14 @@ trait ExaminationRoute
         complete {
           getExamSubjectByExamID(examId, DbModule.getDB(userID))
         }
-      } ~ path("add-exam-sub") {
+      } ~ path("delete-exam-subject" / IntNumber) { examId =>
+        delete{
+          log.debug(s"Got request to delete the exam-subjects")
+          complete {
+            deleteSubject(examId, DbModule.getDB(userID)).map(v=>v.toString)
+          }
+        }
+      }~ path("add-exam-sub") {
         post {
           entity(as[Examinations_Subjects]) { sub =>
             log.debug(s"Got request to add the exam-subjects $sub")

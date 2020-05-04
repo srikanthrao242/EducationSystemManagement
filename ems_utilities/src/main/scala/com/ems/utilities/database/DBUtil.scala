@@ -31,6 +31,8 @@ object DBUtil {
 
     def delete(k: Key,db:String = ""): ConnectionIO[Int]
 
+    def deleteBy(k: Key,column:String, db:String = ""): ConnectionIO[Int]
+
   }
 
   object Dao {
@@ -121,6 +123,14 @@ object DBUtil {
                 s"""
                 DELETE FROM ${concatDot(db)}$table
                 WHERE $keyCol = ?
+              """).run(k)
+            }
+
+            def deleteBy(k: Key, column:String, db:String = ""): ConnectionIO[Int] = {
+              Update[Key](
+                s"""
+                DELETE FROM ${concatDot(db)}$table
+                WHERE  $column = ?
               """).run(k)
             }
           }
