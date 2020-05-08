@@ -37,4 +37,16 @@ trait ExamSubjectServices {
     }.unsafeToFuture()
   }
 
+  def updateSubject(subjDetails: Examinations_Subjects, db:String): Future[Int] ={
+    subjDetails.SubjectID match {
+      case Some(id) =>
+        DbModule.transactor.use{xa=>
+          updateBy(id,"SubjectID",subjDetails,db).transact(xa)
+        }.unsafeToFuture()
+      case None =>
+        throw new Exception("need subject Id for update")
+    }
+
+  }
+
 }

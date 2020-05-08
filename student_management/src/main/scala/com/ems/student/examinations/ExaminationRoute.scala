@@ -18,14 +18,14 @@ trait ExaminationRoute
   implicit val executor: ExecutionContext
   val examinationRoute: Route = pathPrefix("examination" / IntNumber) {
     userID =>
-    path("exams"/IntNumber){ academicId=>
-      get{
-        log.debug(s"got request to get all exams of academic $academicId")
-        complete{
-          getExams(academicId, DbModule.getDB(userID))
+      path("exams" / IntNumber) { academicId =>
+        get {
+          log.debug(s"got request to get all exams of academic $academicId")
+          complete {
+            getExams(academicId, DbModule.getDB(userID))
+          }
         }
-      }
-    }~
+      } ~
       path("add-exam") {
         post {
           entity(as[Examinations_Details]) { exam =>
@@ -41,18 +41,27 @@ trait ExaminationRoute
           getExamSubjectByExamID(examId, DbModule.getDB(userID))
         }
       } ~ path("delete-exam-subject" / IntNumber) { examId =>
-        delete{
+        delete {
           log.debug(s"Got request to delete the exam-subjects")
           complete {
-            deleteSubject(examId, DbModule.getDB(userID)).map(v=>v.toString)
+            deleteSubject(examId, DbModule.getDB(userID)).map(v => v.toString)
           }
         }
-      }~ path("add-exam-sub") {
+      } ~ path("add-exam-sub") {
         post {
           entity(as[Examinations_Subjects]) { sub =>
             log.debug(s"Got request to add the exam-subjects $sub")
             complete {
-              addSubject(sub, DbModule.getDB(userID)).map(v=> v.toString)
+              addSubject(sub, DbModule.getDB(userID)).map(v => v.toString)
+            }
+          }
+        }
+      } ~ path("update-exam-sub") {
+        put {
+          entity(as[Examinations_Subjects]) { sub =>
+            log.debug(s"Got request to update the exam-subjects $sub")
+            complete {
+              updateSubject(sub, DbModule.getDB(userID)).map(v => v.toString)
             }
           }
         }
