@@ -258,6 +258,8 @@ trait UserSchema extends SLF4JLogging {
          |  `Email` VARCHAR(45) NULL,
          |  `IsActive` TINYINT NULL,
          |  `ProfileImage` VARCHAR(200) NULL,
+         |  `telegram_chat_id` VARCHAR(45) NULL,
+         |  `telegram_user_id` VARCHAR(45) NULL
          |  PRIMARY KEY (`StudentID`),
          |  UNIQUE INDEX `StudentID_UNIQUE` (`StudentID` ASC) VISIBLE);
          |""".stripMargin

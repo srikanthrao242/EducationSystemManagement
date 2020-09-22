@@ -21,7 +21,9 @@ case class StudentDetails(
                            Country: String,
                            Email: String,
                            IsActive: Boolean,
-                           ProfileImage: String
+                           ProfileImage: String,
+                           telegram_chat_id:Option[String],
+                           telegram_user_id:Option[String]
                          )
 
 case class ParentDetails(
@@ -103,7 +105,7 @@ object StudentSer {
 
   import com.ems.utilities.Utils._
 
-  implicit val studentDetailsF: RootJsonFormat[StudentDetails] = jsonFormat16(StudentDetails)
+  implicit val studentDetailsF: RootJsonFormat[StudentDetails] = jsonFormat18(StudentDetails)
   implicit val parentDetailsF: RootJsonFormat[ParentDetails] = jsonFormat16(ParentDetails)
   implicit val admissionF: RootJsonFormat[Admission] = jsonFormat6(Admission)
   implicit val admissionFeeDetailsF: RootJsonFormat[AdmissionFeeDetails] = jsonFormat6(AdmissionFeeDetails)
